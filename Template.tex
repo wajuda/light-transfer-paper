@@ -1,9 +1,13 @@
+\pdfoutput=1
 % Template for ICASSP-2026 paper; to be used with:
 %          spconf.sty  - ICASSP/ICIP LaTeX style file, and
 %          IEEEbib.bst - IEEE bibliography style file.
 % --------------------------------------------------------------------------
 \documentclass{article}
-\usepackage{spconf,amsmath,graphicx,hyperref}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{spconf,amsmath,hyperref}
+\usepackage[pdftex]{graphicx}
 \usepackage{comment}
 %\usepackage[preprint]{aistats2026}
 \usepackage{subcaption}
@@ -72,7 +76,7 @@ Low-Light Image Enhancement (LLIE) aims to improve the brightness and visibility
 Traditional methods for the LLIE problem can be categorized primarily into histogram equalization-based approaches (\cite{he}) and Retinex-based approaches (\cite{retinex}). Histogram equalization-based methods aim to adjust the original pixel distribution. On the other hand, Retinex-based methods are founded on the Retinex theory, which posits that an image can be decomposed into an illumination component and a reflection component. Conventional methods often struggle with diverse lighting conditions and exhibit limited performance. 
 
 
-Nowadays, deep learning-based approaches have recently emerged as the dominant paradigm in LLIE, owing to their powerful ability to model complex non-linear relationships. \textcite{retinex} proposed the first Retinex-based deep networks that adaptively decompose the input images and used another Enhance-Net to adjust the illumination. In addition, several advanced models in other domains have been migrated to LLIE for superior performance. \textcite{retinexformer} designed an Illumination-Guided Transformer (IGT) that captures the non-local relationship of regions with different lighting conditions. \textcite{lldiff} presented a conditional diffusion model to produce satisfactory results with a powerful generation ability. More recently, \textcite{hvicidnet} proposed a new HVI color space to decouple brightness from chrominance and a two-branch CIDNet with cross-attention, achieving state-of-the-art results on ten paired benchmarks. \textcite{retidiff} combined the Retinex prior with a latent diffusion model, where a Retinex-guided transformer uses the generated reflectance and illumination priors to restore degraded images with strong generative capacity. Beyond paired supervised learning, \textcite{zerodce++} took a zero-reference unsupervised route, training a lightweight curve-estimation network with non-reference losses (spatial consistency, exposure control, color constancy and illumination smoothness), enabling real-time enhancement without any paired or unpaired data.
+Nowadays, deep learning-based approaches have recently emerged as the dominant paradigm in LLIE, owing to their powerful ability to model complex non-linear relationships. \cite{retinex} proposed the first Retinex-based deep networks that adaptively decompose the input images and used another Enhance-Net to adjust the illumination. In addition, several advanced models in other domains have been migrated to LLIE for superior performance. \cite{retinexformer} designed an Illumination-Guided Transformer (IGT) that captures the non-local relationship of regions with different lighting conditions. \cite{lldiff} presented a conditional diffusion model to produce satisfactory results with a powerful generation ability. More recently, \cite{hvicidnet} proposed a new HVI color space to decouple brightness from chrominance and a two-branch CIDNet with cross-attention, achieving state-of-the-art results on ten paired benchmarks. \cite{retidiff} combined the Retinex prior with a latent diffusion model, where a Retinex-guided transformer uses the generated reflectance and illumination priors to restore degraded images with strong generative capacity. Beyond paired supervised learning, \cite{zerodce++} took a zero-reference unsupervised route, training a lightweight curve-estimation network with non-reference losses (spatial consistency, exposure control, color constancy and illumination smoothness), enabling real-time enhancement without any paired or unpaired data.
 
 
 
@@ -100,11 +104,11 @@ opted in the style transfer domain, ALTNet  decrease the perplexity of the model
 \end{itemize}
 
 \section{RELATED WORKS}
-\paragraph{Unpaired NIE.} NIE can be mainly divided into three classes: supervised learning, unsupervised learning and unpaired learning. Supervised learning-based methods need perfectly matched ground truth as pixel-level supervisory signals, whereas unsupervised learning-based methods only need nighttime input and highly depend on handcrafted priors. Unlike supervised and unsupervised learning, unpaired LLIE is trained on two independent sets of low-light and normal-light images. It combines the advantages to achieve an excellent result while reducing the requirement for strict pairing. \textcite{enlightengan} used a global-local discriminator to examine the enhanced results. \textcite{cycleretinex} incorporated the Retinex theory into the generative adversarial network. \textcite{invertibleLLIE} utilzed the invertible network to enhance low-light images and degrade the normal-light images inversely. \textcite{lightendiffusionjiang2024} presented a content decomposition network to obtain content-rich reflectance maps and content-free illumination maps before the diffusion model.
+\paragraph{Unpaired NIE.} NIE can be mainly divided into three classes: supervised learning, unsupervised learning and unpaired learning. Supervised learning-based methods need perfectly matched ground truth as pixel-level supervisory signals, whereas unsupervised learning-based methods only need nighttime input and highly depend on handcrafted priors. Unlike supervised and unsupervised learning, unpaired LLIE is trained on two independent sets of low-light and normal-light images. It combines the advantages to achieve an excellent result while reducing the requirement for strict pairing. \cite{enlightengan} used a global-local discriminator to examine the enhanced results. \cite{cycleretinex} incorporated the Retinex theory into the generative adversarial network. \cite{invertibleLLIE} utilzed the invertible network to enhance low-light images and degrade the normal-light images inversely. \cite{lightendiffusionjiang2024} presented a content decomposition network to obtain content-rich reflectance maps and content-free illumination maps before the diffusion model.
 
 
 \paragraph{Style Transfer.}
-Style transfer aims to change the style of the image without affecting the content. \textcite{gatys2016image} utilized the convolution layers in VGG to extract the high level representation of images and matched the correlation of deep features. Following the encoder-decoder architecture, many feature transformation modules have been proposed. \textcite{adain} matched the mean and variance of deep features. \textcite{li2017universal} employed the Whitening and Coloring Transform (WCT) to match the inter-channel correlation. \textcite{wct2} leveraged a wavelet corrected transfer to enhances photorealism. \textcite{capvst} adopted the reversible residual network to keep the content affinity.
+Style transfer aims to change the style of the image without affecting the content. \cite{gatys2016image} utilized the convolution layers in VGG to extract the high level representation of images and matched the correlation of deep features. Following the encoder-decoder architecture, many feature transformation modules have been proposed. \cite{adain} matched the mean and variance of deep features. \cite{li2017universal} employed the Whitening and Coloring Transform (WCT) to match the inter-channel correlation. \cite{wct2} leveraged a wavelet corrected transfer to enhances photorealism. \cite{capvst} adopted the reversible residual network to keep the content affinity.
 
 \section{DATASET PREPARATION} \label{sec:dataset}
 
@@ -113,17 +117,21 @@ Style transfer aims to change the style of the image without affecting the conte
 \vspace{-0.15in}
 %\centerline{\fbox{This figure intentionally left non-blan}}
 \centering
-\begin{tabular}{ccc}
-    \includegraphics[width = 0.32\linewidth]{figures/multiply/1_low.png} &
-    \includegraphics[width = 0.32\linewidth]{figures/multiply/780_low.png} & 
-    \includegraphics[width = 0.32\linewidth]{figures/multiply/22 (12) low.jpg}  \\
-    \includegraphics[width = 0.32\linewidth]{figures/heading/1.png} &
-    \includegraphics[width = 0.32\linewidth]{figures/heading/547.png} & 
-    \includegraphics[width = 0.32\linewidth]{figures/transform/22 (12).jpg}  \\
+\begin{tabular}{cccc}
+    \includegraphics[width = 0.24\linewidth]{figures/multiply/1_low.png} &
+    \includegraphics[width = 0.24\linewidth]{figures/multiply/780_low.png} & 
+    \includegraphics[width = 0.24\linewidth]{figures/multiply/22 (12) low.jpg}
+    & 
+    \includegraphics[width = 0.24\linewidth]{figures/heading/11 (3)_x5.jpg}\\
+    \includegraphics[width = 0.24\linewidth]{figures/heading/1.png} &
+    \includegraphics[width = 0.24\linewidth]{figures/heading/547.png} & 
+    \includegraphics[width = 0.24\linewidth]{figures/transform/22 (12).jpg}
+     & 
+    \includegraphics[width = 0.24\linewidth]{figures/heading/11 (3).jpg} \\
     
     
      
-     Paired & Unpaired & Weakly paired\\
+     Paired & Unpaired & \multicolumn{2}{c}{Weakly paired}\\
      
 \end{tabular}
 %\vspace{-in}
@@ -274,92 +282,51 @@ RetinexFormer (\cite{retinexformer}) is based on supervised learning. ZeroDCE (\
 
 
 
-\begin{table}[htbp]
+\begin{table*}[htbp]
 \fontsize{8}{8}\selectfont
-\caption{Performance metrics on the DNP dataset. The methods with $*$ employ the optimal pretrained weights as the origin papers. Otherwise, they are trained from scratch on the DNP dataset. \textbf{Bold} indicates the best results and \underline{underline} indicates the second best.} \label{tab:dnp}
+\caption{Performance metrics on the PKUv2-small Valid set. \textbf{Bold} indicates the best results and \underline{underline} indicates the second best.}
+\label{tab:pkuv2}
 \centering
-\begin{tabular}{l|c|ccc}
-\textbf{Methods} & \textbf{Size(M)} & \textbf{NIQE}$\downarrow$ & \textbf{PI}$\downarrow$ & \textbf{MUSIQ}$\uparrow$ \\
+\begin{tabular}{l|ccccccccc}
 \hline
-\multicolumn{5}{c}{\textbf{Supervised Learning}} \\
+\textbf{Methods} & \textbf{MUSIQ}$\uparrow$ & \textbf{HyperIQA}$\uparrow$ & \textbf{MANIQA}$\uparrow$ & \textbf{NIMA}$\uparrow$ & \textbf{TReS}$\uparrow$ & \textbf{ILNIQE}$\downarrow$ & \textbf{NIQE}$\downarrow$ & \textbf{PI}$\downarrow$ & \textbf{BRISQUE}$\downarrow$ \\
 \hline
-RetinexFormer & \multirow{2}{*}{1.61}& 6.72 & 6.98 & 16.66 \\
-RetinexFormer* & & 3.07 & 2.27 & 58.10  \\
+\multicolumn{10}{c}{\textbf{Zero-Reference Unsupervised}} \\
 \hline
-\multicolumn{5}{c}{\textbf{Unsupervised Learning}} \\
+Zero-DCE++      & 59.60 & 0.438 & \underline{0.371} & 4.29 & 73.24 & 20.35 & \underline{3.00} & \underline{2.15} & 20.27 \\
 \hline
-ZeroDCE & \multirow{2}{*}{0.079} & 3.29 & 2.32 & 59.55 \\
-ZeroDCE* & & 3.15 & 2.19 & 59.89 \\
-RUAS & \multirow{2}{*}{0.003} & 5.49 & 4.04 & 51.40 \\
-RUAS* & & 5.30 & 3.89 & 50.68 \\
-SCI & \multirow{2}{*}{0.0003} & 3.72 & 3.02 & 48.87 \\
-SCI* & & 3.32 & 2.25 & 59.77 \\
+\multicolumn{10}{c}{\textbf{Supervised Learning}} \\
 \hline
-\multicolumn{5}{c}{\textbf{Unpaired Learning}} \\
+HVI-CIDNet      & 61.99 & 0.456 & 0.352 & 4.32 & 75.18 & 21.14 & 3.44 & 2.59 & 23.75 \\
+RetinexFormer   & 58.09 & \textbf{0.499} & 0.308 & \textbf{4.44} & 75.30 & \underline{19.68} & 3.07 & 2.27 & \textbf{10.74} \\
+Reti-Diff       & \underline{62.49} & \underline{0.469} & \textbf{0.391} & \underline{4.39} & \underline{78.19} & 21.32 & 3.46 & 2.52 & 24.54 \\
+Multinex (CVPR'26) & 60.73 & 0.438 & 0.356 & 4.27 & 74.36 & 20.94 & 3.20 & 2.37 & 20.48 \\
 \hline
-Cycle-Retinex & \multirow{2}{*}{6.78} & 3.23 & 2.22 & \textbf{62.81} \\
-Cycle-Retinex* & & \underline{2.99} &\underline{2.12} & \underline{62.52} \\
-LightenDiffusion* & 27.83 & 3.45 & 2.57 & 56.81 \\
-SelfEnNET & \multirow{2}{*}{0.17} & 3.39 & 2.86 & 57.47 \\
-SelfEnNET* & & 3.33 & 2.94 & 54.76 \\
+\multicolumn{10}{c}{\textbf{Transfer Learning}} \\
 \hline
-\multicolumn{5}{c}{\textbf{Transfer Learning}} \\
+CAP-VST         & 43.08 & 0.362 & 0.343 & 3.39 & 65.54 & 44.87 & 4.17 & 3.29 & 21.53 \\
 \hline
-AdaIN & \multirow{2}{*}{23.59} & 3.45 & 2.46 & 59.19 \\
-AdaIN* & & 3.23 & 2.46 & 56.18 \\
-CAP-VST & \multirow{2}{*}{4.09} & 3.12 & 2.24 & 60.81 \\
-CAP-VST* & & 3.43 & 2.45 & 58.16 \\
+\multicolumn{10}{c}{\textbf{Ours}} \\
 \hline
-ALTNet(ours) & 0.09 & \textbf{2.98} & \textbf{2.04} & 61.61 \\
+Ours (6.1, gain\_max=2.0) & \textbf{63.13} & 0.472 & 0.372 & 4.38 & \textbf{79.23} & \textbf{19.64} & \textbf{2.91} & \textbf{2.03} & \underline{19.83} \\
 \hline
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{table*}[htbp]
+\fontsize{8}{8}\selectfont
+\caption{Ablation study on PKUv2-small Valid. \textit{pre}: frozen DCE++ frontend. \textit{backbone}: latent-space WCT via RevResNet. \textit{post}: AlphaNet refinement. \textbf{Bold} indicates the best, \underline{underline} the second best.}
+\label{tab:ablation}
 \centering
-\small
-\caption{Generalization performance metrics on the LOL dataset. The methods with $*$ employ the optimal pretrained weights as the origin papers. Otherwise, they are trained from scratch on the DNP dataset. \textbf{Bold} indicates the best results and \underline{underline} indicates the second best. Note that RetinexFormer$*$ is excluded from comparison as it is directly supervised on the LOL dataset.}
-\label{tab:generation}
-\begin{tabular}{l|c|cc|cc|cc}
+\begin{tabular}{ccc|l|ccccccccc}
 \hline
-\multirow{2}{*}{\textbf{Methods}}  &\multirow{2}{*}{\textbf{Size(M)}}& \multicolumn{2}{c|}{\textbf{LOL-v1}} & \multicolumn{2}{c|}{\textbf{LOL-v2-real}} & \multicolumn{2}{c}{\textbf{LOL-v2-syn}} \\
-\cline{3-8}
- && \textbf{PSNR$\uparrow$} & \textbf{SSIM$\uparrow$} & \textbf{PSNR$\uparrow$} & \textbf{SSIM$\uparrow$} & \textbf{PSNR$\uparrow$} & \textbf{SSIM$\uparrow$} \\
+\textbf{pre} & \textbf{backbone} & \textbf{post} & \textbf{Setting} & \textbf{MUSIQ}$\uparrow$ & \textbf{HyperIQA}$\uparrow$ & \textbf{MANIQA}$\uparrow$ & \textbf{NIMA}$\uparrow$ & \textbf{TReS}$\uparrow$ & \textbf{ILNIQE}$\downarrow$ & \textbf{NIQE}$\downarrow$ & \textbf{PI}$\downarrow$ & \textbf{BRISQUE}$\downarrow$ \\
 \hline
-
-\multicolumn{8}{c}{\textbf{Supervised Learning}} \\
-\hline
-RetinexFormer&\multirow{2}{*}{1.61}& 13.434 & 0.285 & 12.058 & 0.246 & 11.366 & 0.298 \\
-RetinexFormer* & &25.154 & 0.840 & 28.977 & 0.894 & 16.190 & 0.664 \\
-\hline
-
-\multicolumn{8}{c}{\textbf{Unsupervised Learning}} \\
-\hline
-ZeroDCE & \multirow{2}{*}{0.079}&15.597 & 0.482 & 13.744 & 0.461 & 14.709 & 0.643 \\
-ZeroDCE* && 14.861 & 0.586 & 18.059 & 0.604 & 17.756 & 0.724 \\
-RUAS & \multirow{2}{*}{0.003}&15.290 & 0.570 & 16.097 & 0.528 & 13.772 & 0.582 \\
-RUAS*  && 16.405 & 0.581 & 15.326 & 0.517 & 13.404 & 0.577 \\
-SCI & \multirow{2}{*}{0.0003}&9.890 & 0.109 & 12.119 & 0.179 & 12.881 & 0.201 \\
-SCI*  & &13.806 & 0.532 & 17.253 & 0.574 & 16.695 & 0.654 \\
-\hline
-
-\multicolumn{8}{c}{\textbf{Unpaired Learning}} \\
-\hline
-Cycle-Retinex& \multirow{2}{*}{6.78}& 16.813 & 0.741 & 19.632 & 0.753 & 18.478 & 0.791 \\
-Cycle-Retinex* && 18.351 & 0.756 & 19.975 & 0.757 & 18.973 & 0.799 \\
-LightenDiffusion* &27.83& 20.447 & 0.760 & 22.874 & 0.800 & \underline{21.559} & \textbf{0.852} \\
-SelfEnNet & \multirow{2}{*}{0.17}&16.542 & 0.589 & 18.920 & 0.645 & 18.051 & 0.696 \\
-SelfEnNet*  && 16.077 & 0.603 & 20.404 & 0.672 & 16.275 & 0.665 \\
-\hline
-
-\multicolumn{8}{c}{\textbf{Transfer Learning}} \\
-\hline
-AdaIN & \multirow{2}{*}{23.59}&14.201 & 0.477 & 16.865 & 0.498 & 14.730 & 0.550 \\
-AdaIN* &  &16.038 & 0.556 & 19.161 & 0.560 & 17.111 & 0.613 \\
-CAP-VSTNet&\multirow{2}{*}{4.09}& 21.476 & 0.755 & 23.650 & 0.792 & 18.510 & 0.726 \\
-CAP-VSTNet*  & &\underline{23.018} & \textbf{0.811} & \underline{25.115} & \textbf{0.840} & 21.049 & 0.825 \\
-\hline
-ALTNet(ours)& 0.09 & \textbf{24.734} & \underline{0.785} & \textbf{26.693} & \underline{0.816} & \textbf{22.921} & \underline{0.825} \\
+$\times$ & $\times$ & $\times$ & pure WCT                  & 57.45 & 0.4414 & 0.3352 & 4.05 & 76.18 & 22.80 & 3.61 & 2.74 & \underline{22.46} \\
+$\checkmark$ & $\times$ & $\times$ & + pre                    & 59.42 & 0.4589 & \underline{0.3729} & 4.12 & 77.60 & 21.06 & 3.13 & 2.15 & 26.19 \\
+$\checkmark$ & $\checkmark$ & $\times$ & + backbone               & 61.31 & \underline{0.4621} & 0.3635 & \underline{4.28} & 78.23 & 20.36 & 3.15 & 2.18 & 23.80 \\
+$\checkmark$ & $\times$ & $\checkmark$ & + post (RGB WCT)       & \underline{59.96} & 0.4601 & \textbf{0.3922} & 4.24 & \underline{79.17} & 21.13 & 3.16 & 2.15 & 24.63 \\
+$\checkmark$ & $\checkmark$ & $\checkmark$ & full (6.1, gain\_max=2.0) & \textbf{63.13} & \textbf{0.4715} & 0.3721 & \textbf{4.38} & \textbf{79.23} & \textbf{19.64} & \textbf{2.91} & \textbf{2.03} & \textbf{19.83} \\
 \hline
 \end{tabular}
 \end{table*}
@@ -376,8 +343,50 @@ Fig.~\ref{fig:DNPresult} shows several test results of different methods on the 
 
 
 \subsection{Generalization Evaluation}
-\
+\begin{figure*}[htb]
+\setlength{\tabcolsep}{0.5pt} % 极小的列间距
+%\vspace{.3in}
+%\centerline{\fbox{This figure intentionally left non-blan}}
+\centering
+\begin{tabular}{cccccc}
+    Reference &Night&ALTNet(ours)& \hspace{1em} Reference &Night&ALTNet(ours) \\
+    
 
+    
+    \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/exdark (4).JPG} &
+    \includegraphics[width = 0.16\linewidth]{figures/public_crop/b1ee702d-4a193906.png} & 
+     \includegraphics[width = 0.16\linewidth]{figures/public_crop/b1ee702d-4a193906_exdark_4.png} & 
+     \hspace{1em} % 水平间距
+     \includegraphics[width = 0.16\linewidth]{figures/public/bdd (5).jpg} & 
+     \includegraphics[width = 0.16\linewidth]{figures/public_crop/b4a63a7e-74155969.png} & 
+     \includegraphics[width = 0.16\linewidth]{figures/public_crop/b4a63a7e-74155969_bdd_5.png} \\
+     \multicolumn{6}{c}{\textbf{Bdd100k}}\\
+
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (1).jpg} &
+    \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_1.png} & 
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_1_bdd_1.png} & 
+     \hspace{1em} % 水平间距
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (2).jpg} & 
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_2.png} & 
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_2_bdd_2.png} \\
+      \multicolumn{6}{c}{\textbf{ExDark}}\\
+
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (3).jpg} &
+    \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_1.png} & 
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_1_bdd_3.png} & 
+     \hspace{1em} % 水平间距
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/llvip (2).jpg} & 
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_2_night.png} & 
+     \includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_2_llvip_2.png} \\
+      \multicolumn{6}{c}{\textbf{LLVIP}}\\
+
+     
+     
+\end{tabular}
+
+\vspace{.1in}
+\caption{Visual results of Bdd100k, ExDark and LLVIP dataset. The proposed ALTNet is trained on the DNP dataset.} \label{fig:public}
+\end{figure*}
 
 
 In this part, we demonstrate the superior generalizability of the proposed ALTNet on other public dataset without extra training. LoLv1, LOLv2-real, LOLv2-syn are paired dataset and we directly use the matched normal-light images as references to input into the transfer learning-based methods (including the proposed ALTNet). Reference-based metrics, PSNR and SSIM (\cite{ssim}), are used to evaluate the results. The proposed ALTNet gives the best performance on the PSNR and the second best on the SSIM, as shown in Tab.~\ref{tab:generation}. Although this comparison may appear biased since our method also utilizes reference images in the testing time, it entails no risk of information leakage, as only statistics information of reference images are utilized. 
@@ -402,29 +411,6 @@ There are three main conponents of the proposed ALTNet: encoder module, WCT, and
 
 Without the encoder module, there is no extracted feature to comprise ${Z}$. Therefore, WCT is applied directly to the images. If we only match the standard deviation of each channel, the extracted feature will not work since we directly take the last three channels as the enhanced result. Both the encoder module and WCT are conducive to deeper and more detailed matching. Reconstruction loss $L_{rec}$ plays a relatively minor role in performance. Due to that we do not adopt the encoder-decoder architecture in the proposed ALTNet, the reconstruction loss is naturally very small and rapidly drops to nearly zero during the training phase. 
 
-\begin{table}[htbp]
-\small
-\caption{Metrics of ablation study on the DNP dataset. \textbf{Bold} indicates the best results and \underline{underline} indicates the second best.} \label{ablation}
-\begin{center}
-\begin{tabular}{l|lll}
-\textbf{Methods} & \textbf{NIQE}$\downarrow$ & \textbf{PI}$\downarrow$ & \textbf{MUSIQ}$\uparrow$ \\
-%\hline
-%\multicolumn{4}{c}{\textbf{Unpaired Learning (USL)}} \\
-\hline
-%ALTNet (w/o Encoder)  &3.3158&2.5048&56.5063\\
-%ALTNet (w/o WCT)&3.3865&2.5350&57.9930\\
-%ALTNet (w/o $L_{rec}$) &\underline{3.0866}&\underline{2.0801}&\textbf{61.7499}\\
-
-ALTNet (w/o Encoder)  &3.32&2.50&56.51\\
-ALTNet (w/o WCT)&3.39&2.54&57.99\\
-ALTNet (w/o $L_{rec}$) 
-&\underline{3.09}&\underline{2.08}&\textbf{61.75}\\
-\hline
-ALTNet      & \textbf{2.98} & \textbf{2.04} & \underline{61.61} \\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
 
 \section{CONCLUSION}
 
