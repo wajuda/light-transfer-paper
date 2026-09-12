@@ -195,7 +195,7 @@ where $\mathcal{E}_1$ and $\mathcal{E}_2$ are lightweight extractor modules. The
     \bm{x}_2 &= \bm{y}_2 - \mathcal{E}_1(\bm{x}_1),
 \end{aligned}
 \end{equation}
-without any additional learnable parameters. Each extractor $\mathcal{E}$ consists of three stacked $3 \times 3$ convolutional layers; the second layer uses a dilated convolution to enlarge the receptive field while keeping the spatial resolution unchanged.
+without any additional learnable parameters. Each extractor $\mathcal{E}$ consists of three stacked $3 \times 3$ convolutional layers. The first $3 \times 3$ conv reduces the channel dimension to a low-dimensional bottleneck to lower the parameter count, the second is a dilated $3 \times 3$ conv that enlarges the receptive field while keeping the spatial resolution unchanged, and the third $3 \times 3$ conv projects the channels back to the original dimension.
 
 Before the reversible network, we feed the nighttime image $I_{\text{night}}$ into a \emph{frozen} DCE++ \cite{zerodce++} illumination module to obtain an initial enhanced image $\widetilde{I}_{\text{night}}$. Pre-enhancing the nighttime input makes its distribution closer to the daytime one and stabilizes the subsequent latent-space transformation, especially under heavy illumination degradation.
 
