@@ -97,17 +97,20 @@ Our main contributions are as follows:
     
     \item We introduce a novel Nighttime Image Enhancement(NIE) paradigm, \textit{i.e.}, lighting transfer, for the weakly supervised setting. The learning goal is to transfer the lighting condition from daytime images with similar scenes, which makes the task easier since there are illumination references both in the training phase and the inference phase.
 
-opted in the style transfer domain, ALTNet  decrease the perplexity of the model and helping preseving the content affinity.
 
-    \item We propose a simple network named the Adaptive Lighting Transfer Network (ALTNet). The model concatenates both deep features and input images into the transfer module, with the final output obtained by directly extracting the three RGB channels from the transfer result. This design enables the lighting transfer to be learned in a flexible and adaptive manner. Moreover, unlike typical style transfer methods that rely on encoder-decoder architectures, ALTNet reduces model complexity and better preserves content consistency and structural fidelity.
+    \item We propose the Reversible Lighting Transfer Network (RLTNet), which performs illumination transfer entirely in a learned latent space. A reversible encoder maps both the day reference and the night image into compact features, where a \emph{Regularized WCT} (RegWCT) transfers the lighting from day to night, and an AlphaNet refiner adaptively blends the stylized output with the original night image to prevent over-/under-exposure. As a result, RLTNet achieves both high perceptual quality and strong generalization on unpaired low-light images without requiring any strictly paired daytime training data.
+    
+    
+    
+
 
 \end{itemize}
 
 \section{RELATED WORKS}
-\paragraph{Unpaired NIE.} NIE can be mainly divided into three classes: supervised learning, unsupervised learning and unpaired learning. Supervised learning-based methods need perfectly matched ground truth as pixel-level supervisory signals, whereas unsupervised learning-based methods only need nighttime input and highly depend on handcrafted priors. Unlike supervised and unsupervised learning, unpaired LLIE is trained on two independent sets of low-light and normal-light images. It combines the advantages to achieve an excellent result while reducing the requirement for strict pairing. \cite{enlightengan} used a global-local discriminator to examine the enhanced results. \cite{cycleretinex} incorporated the Retinex theory into the generative adversarial network. \cite{invertibleLLIE} utilzed the invertible network to enhance low-light images and degrade the normal-light images inversely. \cite{lightendiffusionjiang2024} presented a content decomposition network to obtain content-rich reflectance maps and content-free illumination maps before the diffusion model.
+\textbf{Unpaired NIE.} NIE can be mainly divided into three classes: supervised learning, unsupervised learning and unpaired learning. Supervised learning-based methods need perfectly matched ground truth as pixel-level supervisory signals, whereas unsupervised learning-based methods only need nighttime input and highly depend on handcrafted priors. Unlike supervised and unsupervised learning, unpaired LLIE is trained on two independent sets of low-light and normal-light images. It combines the advantages to achieve an excellent result while reducing the requirement for strict pairing. \cite{enlightengan} used a global-local discriminator to examine the enhanced results. \cite{cycleretinex} incorporated the Retinex theory into the generative adversarial network. \cite{invertibleLLIE} utilzed the invertible network to enhance low-light images and degrade the normal-light images inversely. \cite{lightendiffusionjiang2024} presented a content decomposition network to obtain content-rich reflectance maps and content-free illumination maps before the diffusion model.
 
 
-\paragraph{Style Transfer.}
+\textbf{Style Transfer.}
 Style transfer aims to change the style of the image without affecting the content. \cite{gatys2016image} utilized the convolution layers in VGG to extract the high level representation of images and matched the correlation of deep features. Following the encoder-decoder architecture, many feature transformation modules have been proposed. \cite{adain} matched the mean and variance of deep features. \cite{li2017universal} employed the Whitening and Coloring Transform (WCT) to match the inter-channel correlation. \cite{wct2} leveraged a wavelet corrected transfer to enhances photorealism. \cite{capvst} adopted the reversible residual network to keep the content affinity.
 
 \section{DATASET PREPARATION} \label{sec:dataset}
@@ -153,7 +156,7 @@ To cope with the above problems, we introduce a new weakly paired dataset, whose
 
 
 
-In the weakly paired dataset, the nighttime images contain the content while daytime images have the desired lighting conditions in similar scenes. Intuitively, the lighting condition can seem as a kind of image style. Consequently, the NIE task belongs to the photorealistic style transfer problem. There are various style transfer modules, such as InstanceNorm (\cite{adain}) and WCT (\cite{li2017universal}). Naively, the transform module can be applied directly in the image itself. Nighttime images will be re-stretched to conform to the distribution of daytime images. To validate this assumption, we conduct a toy experiment using the WCT module solely on the LOLv1 dataset. This experiment aimed to transfer the illumination condition from matched normal-light to low-light images. Since the transformation relies on global statistics rather than pixel-level value, the image pairs do not need to be pixel-aligned. This allows us to use randomly cropped portions (denoted as $\alpha$) of the normal-light images, providing varying amounts of lighting information. As shown in Fig.~\ref{fig:toytest}, even a small crop of a normal-light image can produce an enhanced result with satisfactory illumination. Moreover, as the ratio increases, the stylized images are closer to the target images. This toy experiment inspired us to develop the ALTNet which is described in the following subsection. 
+In the weakly paired dataset, the nighttime images contain the content while daytime images have the desired lighting conditions in similar scenes. Intuitively, the lighting condition can seem as a kind of image style. Consequently, the NIE task belongs to the photorealistic style transfer problem. We conduct a toy experiment using the WCT module solely on the LOLv1 dataset. We use randomly cropped portions (denoted as $\alpha$) of the normal-light images, providing varying amounts of lighting information. As shown in Fig.~\ref{fig:toytest}, even a small crop of a normal-light image can produce an enhanced result with satisfactory illumination. Moreover, as the ratio increases, the stylized images are closer to the target images. This toy experiment inspired us to develop the RLTNet which is described in the following subsection. 
 
 
 
@@ -168,71 +171,52 @@ In the weakly paired dataset, the nighttime images contain the content while day
 \end{figure*}
 
 
-\subsection{Adaptive Lighting Transfer Network}
+\subsection{Reversible Lighting Transfer Network}
+The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. mainly three parts 
+\subsubsection{Reversible Network}
+
+why we need reversible. simple encode decoder used in style transfer 容易导致失真扭曲，一般用于艺术风格迁移，realisetic style transfer need other 专心设计的损失。However, the reversible network promise the perfect latent to rgb process.
 
 
 
-Motivated by the effectiveness of the statistics provided by the daytime references, we proposed an Adaptive Light Transfer Network (ALTNet). The architecture diagram of the proposed ALTNet is illustrated in Fig.~\ref{fig:structure}.
+how to be reversible
+y2 = x2 + E (x1)
+y1 = x1 + E(y2)
 
-Firstly, a simple feature extraction module that contains several convolution layers is utilized to obtain deep feature as the usual encode layer. Rather than applying the transformation only in the feature space, the input image $I\in\mathbb{R}^{3\times H\times W}$ is concatenated at the end of the feature to form an augmented feature $Z\in\mathbb{R}^{C\times H\times W}$, which can expressed as follows:
-\begin{equation}
-    %\hat{Z}_{night} &=  \text{concat}(F_{\theta}(I_{night}), I_{night})\\
-    %\hat{Z}_{day} &=  \text{concat}(F_{\theta}(I_{day}), I_{day})\\
-    \begin{split}
-    Z_{night} &=  {concat}(F_{\theta}(I_{night}), I_{night}),\\
-    Z_{day} &=  {concat}(F_{\theta}(I_{day}), I_{day}).
-     \end{split}
-\end{equation}
-$I_{day}$ and $I_{night}$ are the weakly paired daytime and nighttime images, and $F_\theta$ represents the encoder. 
+x1 = y1 - E(y2)
+x2 = y2- E (x1)
+where E is Extractor module. which contains three conv block.
 
-Subsequently, the lighting transfer module migrates the lighting condition of $Z_{day}$ to $Z_{night}$, generating $Z_{transfer}$. The distinction is that this method does not require a decoder to obtain stylized images. The three channels at the tail of $Z_{transfer}$ can naturally be regarded as stylized images. We only need to separate these three channels to obtain the final result $I_{transfer}$, which can be shown as:
-\begin{equation}
-    \begin{split}
-    Z_{transfer} &=  {LT}(Z_{night},  Z_{day}),\\
-    I_{transfer} &= Z_{transfer}[-3:,:,:].
-    \end{split}
-\end{equation}
-$LT$ is the alternative lighting transfer module, and $[-3:,:,:]$ represents the slice operation to extract the last three channels. Without the encoder-decoder architecture, the risk of introducing artifacts and content distortion is naturally reduced.
+the 1 is channel low  projector , 3 back. Then second use the dilated to add the receptice field.
 
-Theoretically, we can choose any transformation module in the lighting transfer part. If we only match the standard deviation of each channel as AdaIN (\cite{adain}) does, there will be no connection between different channels. Then the final result will be the same as directly applying the transfer module to the image. To ensure that the different channels of $Z$ can influence each other, we adopt the WCT (\cite{capvst}), to match the inter-correlation. Since the features extracted by the encoder can be updated when minimizing the loss item, the proposed lighting transfer mechanism is endowed with flexibility and adaptability.
+before the reversible network , we use a frozen illumination mudule to I_night, initial enhance, make it more similar 分布 as I_day
+\subsubsection{Regularzied WCT}
 
+After the reversible , we get the latent represetation $Z_{day}$ and $Z_{night}$.  we adopt the WCT (\cite{capvst}), to match the inter-correlation. 
 WCT is composed of two steps: whitening and coloring transform. Its purpose is to make the content have the same inter-channel covariance as the style. Firstly, we perform the Choleskey decomposition on the covariance matrix, whose computational cost is much lower that that of SVD. $Z_{night}$ and $Z_{day}$ are regarded as matrices of shape $C$ by $H\times W$ and the process can be expressed as:
 \begin{equation}
     \begin{split}
-    \bm{\Sigma}_{Z_{night}} =&(Z_{night}-\mu(Z_{night}))(Z_{night}-\mu(Z_{night}))^T\\
-    =&S_{night}S^T_{night},\\
-    \bm{\Sigma}_{Z_{day}} =&(Z_{day}-\mu(Z_{day}))(Z_{day}-\mu(Z_{day}))^T\\
-    =&S_{day}S^T_{day},\\
-        %S_{day}S^T_{day} =&  (Z_{day}-\mu(Z_{day}))(Z_{day}-\mu(Z_{day}))^T,\\
-        %S_{night}S^T_{night} =&  (Z_{night}-\mu(Z_{night}))(Z_{night}-\mu(Z_{night}))^T,
+    \bm{\Sigma}_{Z} =&(Z-\mu(Z))(Z-\mu(Z))^T\\
+    =&SS^T
+ 
     \end{split}
 \end{equation}
-where $S\in \mathbb{R}^{C\times C}$ is the lower triangular matrix obtained by performing the Choleskey decomposition on the covariance matrix $\bm{\Sigma}$.
 
-
-
-Subsequently, the inverse of $S_{night}$ is used to remove the correlation of $Z_{night}$, known as whitening. This is followed by a coloring operation through multiplication with $S_{day}$, which can be formulated as:
 \begin{equation}
     \begin{split}
-        %S_{day}S^T_{day} =&  (Z_{day}-\mu(Z_{day}))(Z_{day}-\mu(Z_{day}))^T,\\
-        %S_{night}S^T_{night} =&  (Z_{night}-\mu(Z_{night}))(Z_{night}-\mu(Z_{night}))^T,\\
         Z_{transfer} = & LT(Z_{night},Z_{day})\\
         =& S_{day}S^{-1}_{night}(Z_{night}-\mu(Z_{night}))\\
         &+\mu(Z_{day}).
     \end{split}
 \end{equation}
 
-Now, $Z_{transfer}$ shares the inter-channel correlation of $Z_{day}$, thus achieving the desired lighting transfer:
-\begin{equation}
-    \begin{split}
-        \bm{\Sigma}_{Z_{transfer}} = &(Z_{transfer}-\mu(Z_{trasnfer}))\\
-        &(Z_{transfer}-\mu(Z_{transfer}))^T\\
-        =&S_{day}S^{-1}_{night}(Z_{night}-\mu(Z_{night}))\\
-        &(Z_{night}-\mu(Z_{night}))^TS^{-T}_{night}S^{T}_{day}\\
-        =&S_{day}S^T_{day}\\
-        =&\bm{\Sigma}_{Z_{day}}.
-    \end{split}
-\end{equation}
+ covariance shrinkage + singular-value clipping 数值稳定，限制幅度，  清晰公式展示
+ 
+ \subsubsection{Refiner Network}
+
+I_enhanced = \alpha I_stylized + (1 - \alpha) I_illuminated
+dual path refine network . one is channel path use the SEBlock, another is spatial path use stacked conv layers. we concat , conv then sigmoid to get \alpha 1*H*W
+
 
 
 
@@ -429,6 +413,6 @@ In this paper, we first collect a weakly paired dataset, called the DNP (Daytime
 \vfill\pagebreak
 
 \bibliographystyle{IEEEbib}
-\bibliography{strings,refs,reference}
+\bibliography{reference}
 
 \end{document}
