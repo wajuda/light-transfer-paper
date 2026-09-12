@@ -203,38 +203,41 @@ Before the reversible network, we feed the nighttime image $I_{\text{night}}$ in
 
 After the reversible encoder, we obtain the latent codes $Z_{\text{day}}$ and $Z_{\text{night}}$ for the daytime and nighttime images, respectively. We then perform the lighting transfer with the Whiten--Colorize Transform (WCT) \cite{capvst}, which aligns the inter-channel covariance of the content feature with that of the style feature. WCT consists of two steps: whitening the content feature to remove its original statistics and then coloring it with the target statistics.
 
-Let $Z \in \mathbb{R}^{C \times N}$ ($N = HW$) denote a reshaped latent feature and $Z_c = Z - \bm{\mu}(Z)$ its centered version. Its covariance matrix admits an SVD-like eigendecomposition
+Let $Z \in \mathbb{R}^{C \times N}$ ($N = HW$) denote a reshaped latent feature and $Z_c = Z - \bm{\mu}(Z)$ its centered version. Its covariance admits a Cholesky factorization
 \begin{equation}
-    \bm{\Sigma}_Z = Z_c Z_c^{\!\top} = U\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, U^{\!\top},
+    \bm{\Sigma}_Z = Z_c Z_c^{\!\top} = \bm{L}\, \bm{L}^{\!\top},
 \end{equation}
-where $U \in \mathbb{R}^{C \times C}$ is orthogonal and $\sigma_i \geq 0$ are the eigenvalues (squared singular values of $Z_c$). The transfer operation is then
+where $\bm{L} \in \mathbb{R}^{C \times C}$ is lower-triangular with non-negative diagonal. The transfer operation is then
 \begin{equation}
 \begin{split}
     Z_{\text{transfer}} &= \mathcal{T}(Z_{\text{night}}, Z_{\text{day}}) \\
-    &= U_{\text{day}}\, \mathrm{diag}(\sigma_{\text{day},i}/\sigma_{\text{night},i})\, U_{\text{night}}^{\!\top}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}),
+    &= \bm{L}_{\text{day}}\, \bm{L}_{\text{night}}^{-1}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}),
 \end{split}
 \end{equation}
-where $U_{\text{night}}^{\!\top}$ and $U_{\text{day}}$ play the roles of whitening and coloring, respectively.
+where $\bm{L}_{\text{night}}^{-1}$ and $\bm{L}_{\text{day}}$ play the roles of whitening and coloring, respectively. In practice we never explicitly invert $\bm{L}_{\text{night}}$; instead we solve a triangular system, which is numerically stable as long as the Cholesky factor is well-conditioned.
 
-When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some $\sigma_{\text{night},i}$ are close to zero, so that $1/\sigma_{\text{night},i}$ amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the spectrum of $Z_{\text{night}}$ with two closed-form operations.
+When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some eigenvalues of $\bm{\Sigma}_{Z_{\text{night}}}$ are close to zero, so that the whitening step amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the transfer with two closed-form operations.
 
 \noindent\textbf{Covariance shrinkage.}
-We mix the empirical covariance with a scaled identity,
+Let $\overline{\sigma^2} = \mathrm{tr}(\bm{\Sigma}_Z)/C$ be the average variance (mean of diagonal entries). We mix the empirical covariance with a scaled identity,
 \begin{equation}
-    \widetilde{\bm{\Sigma}}_Z = (1 - \alpha)\, \bm{\Sigma}_Z + \alpha\, \tfrac{\mathrm{tr}(\bm{\Sigma}_Z)}{C}\, \bm{I}, \qquad \alpha \in [0, 1),
+    \widetilde{\bm{\Sigma}}_Z = (1 - \alpha)\, \bm{\Sigma}_Z + \alpha\, \overline{\sigma^2}\, \bm{I}, \qquad \alpha \in [0, 1],
 \end{equation}
-which equivalently replaces every eigenvalue by
-\begin{equation}
-    \widetilde{\sigma}_i = (1 - \alpha)\, \sigma_i + \alpha\, \tfrac{\mathrm{tr}(\bm{\Sigma}_Z)}{C}.
-\end{equation}
-The same $U$ is reused, since $U$ commutes with $\bm{I}$.
+which lifts near-zero eigenvalues and prevents excessive inverse-whitening gains. The parameter $\alpha$ corresponds to the shrinkage ratio in Tab.~\ref{tab:ablation}.
 
-\noindent\textbf{Singular-value clipping.}
-We further bound the dynamic range of the spectrum by clipping each eigenvalue into $[s_{\min}, s_{\max}]$,
+\noindent\textbf{Transport-matrix gain clipping.}
+Let $\bm{L}_c$ and $\bm{L}_s$ be the Cholesky factors of the regularized content covariance and the style covariance, respectively. The transport matrix that maps centered content features to style-coloured features is
 \begin{equation}
-    \widehat{\sigma}_i = \mathrm{clip}\!\left(\widetilde{\sigma}_i,\; s_{\min},\; s_{\max}\right).
+    \bm{T} = \bm{L}_c^{-1}\, \bm{L}_s.
 \end{equation}
-The regularized whitening matrix is then $U_{\text{night}}\, \mathrm{diag}(1/\widehat{\sigma}_{\text{night},i})\, U_{\text{night}}^{\!\top}$.
+We bound the spectral norm of $\bm{T}$ by clamping its singular values,
+\begin{equation}
+    \widehat{\bm{T}} = \bm{U}\, \mathrm{diag}\!\left(\min(\sigma_i,\; s_{\max})\right)\, \bm{V}^{\!\top},
+\end{equation}
+where $\bm{T} = \bm{U}\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, \bm{V}^{\!\top}$ is the SVD of $\bm{T}$ and $s_{\max}$ is the gain cap. The final transfer reads
+\begin{equation}
+    Z_{\text{transfer}} = \widehat{\bm{T}}\, (Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
+\end{equation}
 
 Both operations are purely \emph{analytical}, require no extra training, and stabilize the whitening step under heavy illumination degradation. Their consistent visual benefit is confirmed in the ablation study (Tab.~\ref{tab:ablation}).
 
