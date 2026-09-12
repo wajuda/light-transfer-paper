@@ -219,7 +219,7 @@ and the transfer operation becomes
     &= \bm{\Sigma}_{Z_{\text{day}}}^{+1/2}\, \bm{\Sigma}_{Z_{\text{night}}}^{-1/2}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
 \end{split}
 \end{equation}
-When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some eigenvalues of $\bm{\Sigma}_{Z_{\text{night}}}$ are close to zero, so that the whitening step amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the transfer with two closed-form operations. In our implementation we use the equivalent Cholesky factorization for computational efficiency, and all operations are performed in double precision for numerical stability.
+When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some eigenvalues of $\bm{\Sigma}_{Z_{\text{night}}}$ are close to zero, so that the whitening step amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the transfer with two closed-form operations.
 
 \noindent\textbf{Covariance shrinkage.}
 Let $\overline{\sigma^2} = \mathrm{tr}(\bm{\Sigma}_Z)/C$ be the average variance (mean of diagonal entries). We mix the empirical covariance with a scaled identity,
