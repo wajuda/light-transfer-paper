@@ -203,20 +203,23 @@ Before the reversible network, we feed the nighttime image $I_{\text{night}}$ in
 
 After the reversible encoder, we obtain the latent codes $Z_{\text{day}}$ and $Z_{\text{night}}$ for the daytime and nighttime images, respectively. We then perform the lighting transfer with the Whiten--Colorize Transform (WCT) \cite{capvst}, which aligns the inter-channel covariance of the content feature with that of the style feature. WCT consists of two steps: whitening the content feature to remove its original statistics and then coloring it with the target statistics.
 
-Let $Z \in \mathbb{R}^{C \times N}$ ($N = HW$) denote a reshaped latent feature and $Z_c = Z - \bm{\mu}(Z)$ its centered version. Its covariance admits a Cholesky factorization
+Let $Z \in \mathbb{R}^{C \times N}$ ($N = HW$) denote a reshaped latent feature and $Z_c = Z - \bm{\mu}(Z)$ its centered version. Its covariance matrix admits the symmetric eigen-decomposition
 \begin{equation}
-    \bm{\Sigma}_Z = Z_c Z_c^{\!\top} = \bm{L}\, \bm{L}^{\!\top},
+    \bm{\Sigma}_Z = Z_c Z_c^{\!\top} = \bm{U}\, \mathrm{diag}(\lambda_1, \ldots, \lambda_C)\, \bm{U}^{\!\top},
 \end{equation}
-where $\bm{L} \in \mathbb{R}^{C \times C}$ is lower-triangular with non-negative diagonal. The transfer operation is then
+where $\bm{U} \in \mathbb{R}^{C \times C}$ is orthogonal and $\lambda_i \geq 0$ are the eigenvalues. The whitening and coloring transforms can be written with the matrix square roots
+\begin{equation}
+    \bm{\Sigma}_Z^{-1/2} = \bm{U}\, \mathrm{diag}(1/\sqrt{\lambda_i})\, \bm{U}^{\!\top}, \qquad
+    \bm{\Sigma}_Z^{+1/2} = \bm{U}\, \mathrm{diag}(\sqrt{\lambda_i})\, \bm{U}^{\!\top},
+\end{equation}
+and the transfer operation becomes
 \begin{equation}
 \begin{split}
     Z_{\text{transfer}} &= \mathcal{T}(Z_{\text{night}}, Z_{\text{day}}) \\
-    &= \bm{L}_{\text{day}}\, \bm{L}_{\text{night}}^{-1}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}),
+    &= \bm{\Sigma}_{Z_{\text{day}}}^{+1/2}\, \bm{\Sigma}_{Z_{\text{night}}}^{-1/2}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
 \end{split}
 \end{equation}
-where $\bm{L}_{\text{night}}^{-1}$ and $\bm{L}_{\text{day}}$ play the roles of whitening and coloring, respectively. In practice we never explicitly invert $\bm{L}_{\text{night}}$; instead we solve a triangular system, which is numerically stable as long as the Cholesky factor is well-conditioned.
-
-When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some eigenvalues of $\bm{\Sigma}_{Z_{\text{night}}}$ are close to zero, so that the whitening step amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the transfer with two closed-form operations.
+When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some eigenvalues of $\bm{\Sigma}_{Z_{\text{night}}}$ are close to zero, so that the whitening step amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the transfer with two closed-form operations. In our implementation we use the equivalent Cholesky factorization for computational efficiency, and all operations are performed in double precision for numerical stability.
 
 \noindent\textbf{Covariance shrinkage.}
 Let $\overline{\sigma^2} = \mathrm{tr}(\bm{\Sigma}_Z)/C$ be the average variance (mean of diagonal entries). We mix the empirical covariance with a scaled identity,
@@ -226,9 +229,9 @@ Let $\overline{\sigma^2} = \mathrm{tr}(\bm{\Sigma}_Z)/C$ be the average variance
 which lifts near-zero eigenvalues and prevents excessive inverse-whitening gains. The parameter $\alpha$ corresponds to the shrinkage ratio in Tab.~\ref{tab:ablation}.
 
 \noindent\textbf{Transport-matrix gain clipping.}
-Let $\bm{L}_c$ and $\bm{L}_s$ be the Cholesky factors of the regularized content covariance and the style covariance, respectively. The transport matrix that maps centered content features to style-coloured features is
+The transport matrix that maps centered content features to style-coloured features is
 \begin{equation}
-    \bm{T} = \bm{L}_c^{-1}\, \bm{L}_s.
+    \bm{T} = \bm{\Sigma}_{Z_{\text{day}}}^{+1/2}\, \widetilde{\bm{\Sigma}}_{Z_{\text{night}}}^{-1/2}.
 \end{equation}
 We bound the spectral norm of $\bm{T}$ by clamping its singular values,
 \begin{equation}
