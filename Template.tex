@@ -172,54 +172,85 @@ In the weakly paired dataset, the nighttime images contain the content while day
 
 
 \subsection{Reversible Lighting Transfer Network}
-The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. mainly three parts 
+\label{sec:RLTNet}
+
+The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. It consists of three components: a \emph{reversible network} that produces invertible latent representations, a \emph{Regularized Whiten--Colorize Transfer} (RegWCT) that transfers lighting in the latent space, and an \emph{AlphaNet} refiner that adaptively blends the stylized output with the illuminated input.
+
 \subsubsection{Reversible Network}
+\label{sec:revnet}
 
-why we need reversible. simple encode decoder used in style transfer 容易导致失真扭曲，一般用于艺术风格迁移，realisetic style transfer need other 专心设计的损失。However, the reversible network promise the perfect latent to rgb process.
+Photorealistic style transfer requires the encoded features to preserve the original content faithfully. Generic encoder--decoder networks tend to lose fine details and require carefully designed perceptual or reconstruction losses to keep the content affinity, which makes them more suitable for artistic style transfer than for realistic enhancement. In contrast, a reversible network guarantees an exact reconstruction of the input from its latent code, eliminating the need for a separately trained decoder and ensuring that the content is perfectly preserved by construction.
 
-
-
-how to be reversible
-y2 = x2 + E (x1)
-y1 = x1 + E(y2)
-
-x1 = y1 - E(y2)
-x2 = y2- E (x1)
-where E is Extractor module. which contains three conv block.
-
-the 1 is channel low  projector , 3 back. Then second use the dilated to add the receptice field.
-
-before the reversible network , we use a frozen illumination mudule to I_night, initial enhance, make it more similar 分布 as I_day
-\subsubsection{Regularzied WCT}
-
-After the reversible , we get the latent represetation $Z_{day}$ and $Z_{night}$.  we adopt the WCT (\cite{capvst}), to match the inter-correlation. 
-WCT is composed of two steps: whitening and coloring transform. Its purpose is to make the content have the same inter-channel covariance as the style. Firstly, we perform the Choleskey decomposition on the covariance matrix, whose computational cost is much lower that that of SVD. $Z_{night}$ and $Z_{day}$ are regarded as matrices of shape $C$ by $H\times W$ and the process can be expressed as:
+Concretely, the reversible encoder takes a daytime or nighttime image $I \in \mathbb{R}^{3 \times H \times W}$ and splits it into two halves along the channel dimension, $\bm{x}_1$ and $\bm{x}_2 \in \mathbb{R}^{C \times H \times W}$, which are updated as
 \begin{equation}
-    \begin{split}
-    \bm{\Sigma}_{Z} =&(Z-\mu(Z))(Z-\mu(Z))^T\\
-    =&SS^T
- 
-    \end{split}
+\begin{aligned}
+    \bm{y}_2 &= \bm{x}_2 + \mathcal{E}_1(\bm{x}_1), \\
+    \bm{y}_1 &= \bm{x}_1 + \mathcal{E}_2(\bm{y}_2),
+\end{aligned}
 \end{equation}
-
+where $\mathcal{E}_1$ and $\mathcal{E}_2$ are lightweight extractor modules. The forward pass produces the latent features $\bm{Z} = (\bm{y}_1, \bm{y}_2) \in \mathbb{R}^{2C \times H \times W}$. The inverse pass recovers the input analytically,
 \begin{equation}
-    \begin{split}
-        Z_{transfer} = & LT(Z_{night},Z_{day})\\
-        =& S_{day}S^{-1}_{night}(Z_{night}-\mu(Z_{night}))\\
-        &+\mu(Z_{day}).
-    \end{split}
+\begin{aligned}
+    \bm{x}_1 &= \bm{y}_1 - \mathcal{E}_2(\bm{y}_2), \\
+    \bm{x}_2 &= \bm{y}_2 - \mathcal{E}_1(\bm{x}_1),
+\end{aligned}
 \end{equation}
+without any additional learnable parameters. Each extractor $\mathcal{E}$ contains three convolutional blocks: a $1 \times 1$ convolution that projects the channels to a low-dimensional space, followed by two $3 \times 3$ convolutions (the second one being dilated to enlarge the receptive field) that refine the spatial structure, and a final $1 \times 1$ convolution that projects the channels back.
 
- covariance shrinkage + singular-value clipping 数值稳定，限制幅度，  清晰公式展示
- 
- \subsubsection{Refiner Network}
+Before the reversible network, we feed the nighttime image $I_{\text{night}}$ into a \emph{frozen} DCE++ \cite{zerodce++} illumination module to obtain an initial enhanced image $\widetilde{I}_{\text{night}}$. Pre-enhancing the nighttime input makes its distribution closer to the daytime one and stabilizes the subsequent latent-space transformation, especially under heavy illumination degradation.
 
-I_enhanced = \alpha I_stylized + (1 - \alpha) I_illuminated
-dual path refine network . one is channel path use the SEBlock, another is spatial path use stacked conv layers. we concat , conv then sigmoid to get \alpha 1*H*W
+\subsubsection{Regularized Whiten--Colorize Transfer}
 
+After the reversible encoder, we obtain the latent codes $Z_{\text{day}}$ and $Z_{\text{night}}$ for the daytime and nighttime images, respectively. We then perform the lighting transfer with the Whiten--Colorize Transform (WCT) \cite{capvst}, which aligns the inter-channel covariance of the content feature with that of the style feature. WCT consists of two steps: whitening the content feature to remove its original statistics and then coloring it with the target statistics.
 
+Let $Z \in \mathbb{R}^{C \times N}$ ($N = HW$) denote a reshaped latent feature and $Z_c = Z - \bm{\mu}(Z)$ its centered version. Its covariance matrix admits an SVD-like eigendecomposition
+\begin{equation}
+    \bm{\Sigma}_Z = Z_c Z_c^{\!\top} = U\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, U^{\!\top},
+\end{equation}
+where $U \in \mathbb{R}^{C \times C}$ is orthogonal and $\sigma_i \geq 0$ are the eigenvalues (squared singular values of $Z_c$). The transfer operation is then
+\begin{equation}
+\begin{split}
+    Z_{\text{transfer}} &= \mathcal{T}(Z_{\text{night}}, Z_{\text{day}}) \\
+    &= U_{\text{day}}\, \mathrm{diag}(\sigma_{\text{day},i}/\sigma_{\text{night},i})\, U_{\text{night}}^{\!\top}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}),
+\end{split}
+\end{equation}
+where $U_{\text{night}}^{\!\top}$ and $U_{\text{day}}$ play the roles of whitening and coloring, respectively.
 
+When the input is severely degraded, the covariance of $Z_{\text{night}}$ is ill-conditioned: some $\sigma_{\text{night},i}$ are close to zero, so that $1/\sigma_{\text{night},i}$ amplifies noise and produces colour artefacts and instability. To address this, we propose a \emph{Regularized WCT} (RegWCT) that stabilizes the spectrum of $Z_{\text{night}}$ with two closed-form operations.
 
+\noindent\textbf{Covariance shrinkage.}
+We mix the empirical covariance with a scaled identity,
+\begin{equation}
+    \widetilde{\bm{\Sigma}}_Z = (1 - \alpha)\, \bm{\Sigma}_Z + \alpha\, \tfrac{\mathrm{tr}(\bm{\Sigma}_Z)}{C}\, \bm{I}, \qquad \alpha \in [0, 1),
+\end{equation}
+which equivalently replaces every eigenvalue by
+\begin{equation}
+    \widetilde{\sigma}_i = (1 - \alpha)\, \sigma_i + \alpha\, \tfrac{\mathrm{tr}(\bm{\Sigma}_Z)}{C}.
+\end{equation}
+The same $U$ is reused, since $U$ commutes with $\bm{I}$.
+
+\noindent\textbf{Singular-value clipping.}
+We further bound the dynamic range of the spectrum by clipping each eigenvalue into $[s_{\min}, s_{\max}]$,
+\begin{equation}
+    \widehat{\sigma}_i = \mathrm{clip}\!\left(\widetilde{\sigma}_i,\; s_{\min},\; s_{\max}\right).
+\end{equation}
+The regularized whitening matrix is then $U_{\text{night}}\, \mathrm{diag}(1/\widehat{\sigma}_{\text{night},i})\, U_{\text{night}}^{\!\top}$.
+
+Both operations are purely \emph{analytical}, require no extra training, and stabilize the whitening step under heavy illumination degradation. Their consistent visual benefit is confirmed in the ablation study (Tab.~\ref{tab:ablation}).
+
+\subsubsection{Refiner Network (AlphaNet)}
+\label{sec:alphanet}
+
+A one-shot WCT output often suffers from over- or under-exposure in spatially heterogeneous regions. To address this, we introduce an \emph{AlphaNet} refiner that adaptively mixes the stylized latent with the original illuminated one. The refiner operates in a dual-path manner:
+\begin{itemize}
+    \item a \emph{channel path} that uses a Squeeze-and-Excitation block to model inter-channel dependencies;
+    \item a \emph{spatial path} that uses stacked convolutions to capture local spatial context.
+\end{itemize}
+The two paths are concatenated and projected by a $1 \times 1$ convolution followed by a sigmoid, producing an attention map $\bm{\alpha} \in [0, 1]^{1 \times H \times W}$. The final enhanced image is then reconstructed by the inverse reversible network as
+\begin{equation}
+    I_{\text{enhanced}} = \bm{\alpha} \odot I_{\text{stylized}} + (1 - \bm{\alpha}) \odot \widetilde{I}_{\text{night}},
+\end{equation}
+where $\odot$ denotes element-wise multiplication. Because the decoder is the analytical inverse of the reversible encoder, the entire pipeline remains parameter-efficient and content-preserving.
 
 
 \subsection{Loss}
