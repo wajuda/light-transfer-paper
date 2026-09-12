@@ -157,7 +157,15 @@ In the weakly paired dataset, the nighttime images contain the content while day
 
 
 
+\begin{figure*}[t]
 
+\vspace{-.7in}
+%\centerline{\fbox{This figure intentionally left non-blan}}
+\centering
+\includegraphics[width = 1\linewidth]{figures/structure.pdf}
+%\vspace{in}
+\caption{Architecture illustration of the proposed ALTNet. There are three components: extraction with an encoder module; lighting transfer with the WCT; output with the split operation. For better visualization, the nighttime image ($I_{night}$) and extracted features are multiplied by 3 and 5, respectively.}\label{fig:structure}
+\end{figure*}
 
 
 \subsection{Adaptive Lighting Transfer Network}
@@ -293,22 +301,24 @@ RetinexFormer (\cite{retinexformer}) is based on supervised learning. ZeroDCE (\
 \hline
 \multicolumn{10}{c}{\textbf{Zero-Reference Unsupervised}} \\
 \hline
-Zero-DCE++      & 59.60 & 0.438 & \underline{0.371} & 4.29 & 73.24 & 20.35 & \underline{3.00} & \underline{2.15} & 20.27 \\
+Zero-DCE++            & 59.60 & 0.438 & 0.371 & \textbf{4.29} & 73.24 & 20.35 & 3.00 & 2.15 & 20.27 \\
+EnlightenGAN (TIP'21) & 58.05 & 0.430 & 0.341 & 4.24 & 72.45 & 20.39 & \underline{2.96} & \underline{2.14} & 21.52 \\
+Cycle-Retinex         & 61.87 & 0.466 & \underline{0.384} & 4.15 & \underline{78.34} & 20.77 & 3.23 & 2.25 & 24.08 \\
 \hline
 \multicolumn{10}{c}{\textbf{Supervised Learning}} \\
 \hline
-HVI-CIDNet      & 61.99 & 0.456 & 0.352 & 4.32 & 75.18 & 21.14 & 3.44 & 2.59 & 23.75 \\
-RetinexFormer   & 58.09 & \textbf{0.499} & 0.308 & \textbf{4.44} & 75.30 & \underline{19.68} & 3.07 & 2.27 & \textbf{10.74} \\
-Reti-Diff       & \underline{62.49} & \underline{0.469} & \textbf{0.391} & \underline{4.39} & \underline{78.19} & 21.32 & 3.46 & 2.52 & 24.54 \\
-Multinex (CVPR'26) & 60.73 & 0.438 & 0.356 & 4.27 & 74.36 & 20.94 & 3.20 & 2.37 & 20.48 \\
+HVI-CIDNet            & 61.99 & 0.456 & 0.352 & 4.32 & 75.18 & 21.14 & 3.44 & 2.59 & 23.75 \\
+RetinexFormer         & 58.09 & \textbf{0.499} & 0.308 & \textbf{4.44} & 75.30 & \underline{19.68} & 3.07 & 2.27 & \textbf{10.74} \\
+Reti-Diff             & \underline{62.49} & 0.469 & \textbf{0.391} & \underline{4.39} & 78.19 & 21.32 & 3.46 & 2.52 & 24.54 \\
+Multinex (CVPR'26)    & 60.73 & 0.438 & 0.356 & 4.27 & 74.36 & 20.94 & 3.20 & 2.37 & 20.48 \\
 \hline
 \multicolumn{10}{c}{\textbf{Transfer Learning}} \\
 \hline
-CAP-VST         & 43.08 & 0.362 & 0.343 & 3.39 & 65.54 & 44.87 & 4.17 & 3.29 & 21.53 \\
+CAP-VST               & 43.08 & 0.362 & 0.343 & 3.39 & 65.54 & 44.87 & 4.17 & 3.29 & 21.53 \\
 \hline
 \multicolumn{10}{c}{\textbf{Ours}} \\
 \hline
-Ours (6.1, gain\_max=2.0) & \textbf{63.13} & 0.472 & 0.372 & 4.38 & \textbf{79.23} & \textbf{19.64} & \textbf{2.91} & \textbf{2.03} & \underline{19.83} \\
+Ours (6.1, gain\_max=2.0) & \textbf{63.13} & \underline{0.472} & 0.372 & 4.38 & \textbf{79.23} & \textbf{19.64} & \textbf{2.91} & \textbf{2.03} & \underline{19.83} \\
 \hline
 \end{tabular}
 \end{table*}
