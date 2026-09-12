@@ -279,14 +279,6 @@ The total loss is a weighted sum of two specific losses:
 
 
 
-\subsection{Inference with Weak References}
-
-
-
-
-In the proposed ALTNet, the daytime references are input into the networks in both the training and the inference phases. Although a weakly paired reference image is required, it is not difficult to obtain and allows for different lighting conditions, different moving objects, and does not require strict pixel alignment. The toy example shown in Sec.\ref{sec:motivation} has proved the great efficiency brought about by the daytime images. For some specific application scenarios, ALTNet will demonstrate significant advantages over other existing methods that ignore daytime references. For instance, in a fixed point night surveillance scenario, it is easy to record the daytime images of the surrounding environment. We can choose one as a reference to enhance the night images. Additionally, ALTNet uses relatively few parameters, which is very helpful for application deployment on such edge devices. Moreover, the ALTNet does not learn how to directly enhance the input image, but rather how to transfer the lighting conditions of the reference image to the night image. As long as there is a suitable reference image, the risk of insufficient enhancement or color shift is greatly reduced, which significantly enhances generalizability.
-
-
 
 \section{EXPERIMENTS}
 
