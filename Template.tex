@@ -247,12 +247,7 @@ Both operations are purely \emph{analytical}, require no extra training, and sta
 \subsubsection{Refiner Network (AlphaNet)}
 \label{sec:alphanet}
 
-A one-shot WCT output often suffers from over- or under-exposure in spatially heterogeneous regions. To address this, we introduce an \emph{AlphaNet} refiner that adaptively mixes the stylized latent with the original illuminated one. The refiner operates in a dual-path manner:
-\begin{itemize}
-    \item a \emph{channel path} that uses a Squeeze-and-Excitation block to model inter-channel dependencies;
-    \item a \emph{spatial path} that uses stacked convolutions to capture local spatial context.
-\end{itemize}
-The two paths are concatenated and projected by a $1 \times 1$ convolution followed by a sigmoid, producing an attention map $\bm{\alpha} \in [0, 1]^{1 \times H \times W}$. The final enhanced image is then reconstructed by the inverse reversible network as
+A one-shot WCT output often suffers from over- or under-exposure in spatially heterogeneous regions. To address this, we introduce an \emph{AlphaNet} refiner that adaptively mixes the stylized latent with the original illuminated one. AlphaNet takes the concatenation of the stylized and illuminated features and projects them through a stack of convolutional layers, followed by a $1 \times 1$ convolution and a sigmoid, producing an attention map $\bm{\alpha} \in [0, 1]^{1 \times H \times W}$. The final enhanced image is then reconstructed by the inverse reversible network as
 \begin{equation}
     I_{\text{enhanced}} = \bm{\alpha} \odot I_{\text{stylized}} + (1 - \bm{\alpha}) \odot \widetilde{I}_{\text{night}},
 \end{equation}
