@@ -315,7 +315,72 @@ A reason is that in their original training process, datasets containing more im
 
 \subsubsection{Qualitative Results}
 
-Fig.~\ref{fig:DNPresult} shows several test results of different methods on the DNP dataset. SCI has the minimal parameter size, which leads to insufficient enhancement. Unpaired learning-based methods, Cycle-Retinex and SelfEnNet, have severe artifacts around the building and on the road surface. Visually, transfer learning-based methods generate the results with most similar lighting conditions with daytime references. However, AdaIN is not able to cope with photorealistic style transfer, whose results have a distinct blocking effect. CAP-VST adopts a reversible network and various loss functions to keep content affinity, but still causes overexposure and blurring. The proposed ALTNet abandons the widely used encoder-decoder structure, which naturally reduces the risk of generating artifacts and greatly lowers the parameter requirements. In summary, the proposed ALTNet is a simple but efficient lighting transfer method.
+\begin{figure*}[htbp]
+\setlength{\tabcolsep}{0.5pt}
+\centering
+\begin{tabular}{cccccccccccc}
+\includegraphics[width = 0.085\linewidth]{figures/compare/night/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/zero_dce/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/enlightengan/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cycle_retinex/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/retinexformer/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/hvi_cidnet/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/reti_diff/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/multinex/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cap_vst/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/ours/1.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/day/1.jpg} \\
+\includegraphics[width = 0.085\linewidth]{figures/compare/night/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/zero_dce/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/enlightengan/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cycle_retinex/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/retinexformer/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/hvi_cidnet/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/reti_diff/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/multinex/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cap_vst/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/ours/8.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/day/8.jpg} \\
+\includegraphics[width = 0.085\linewidth]{figures/compare/night/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/zero_dce/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/enlightengan/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cycle_retinex/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/retinexformer/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/hvi_cidnet/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/reti_diff/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/multinex/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cap_vst/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/ours/14.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/day/14.jpg} \\
+\includegraphics[width = 0.085\linewidth]{figures/compare/night/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/zero_dce/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/enlightengan/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cycle_retinex/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/retinexformer/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/hvi_cidnet/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/reti_diff/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/multinex/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cap_vst/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/ours/15.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/day/15.jpg} \\
+\includegraphics[width = 0.085\linewidth]{figures/compare/night/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/zero_dce/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/enlightengan/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cycle_retinex/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/retinexformer/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/hvi_cidnet/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/reti_diff/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/multinex/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/cap_vst/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/ours/17.jpg} &
+\includegraphics[width = 0.085\linewidth]{figures/compare/day/17.jpg} \\
+Night & Zero-DCE++ & EnlightenGAN & Cycle-Retinex & RetinexFormer & HVI-CIDNet & Reti-Diff & Multinex & CAP-VST & Ours (RLTNet) & Reference \\
+\end{tabular}
+\vspace{.1in}
+\caption{Visual comparison on the PKUv2-small validation set. Each row shows one nighttime sample enhanced by seven baselines and our RLTNet, together with the original nighttime input (leftmost) and a scene-consistent daytime reference (rightmost). Daytime references are not pixel-aligned with the night inputs and serve only as a global lighting guide.}\label{fig:compare}
+\end{figure*}
+
+Fig.~\ref{fig:compare} shows several test results of different methods on the PKUv2-small validation set. Zero-DCE++ tends to under-enhance, leaving the image dim with residual low-frequency noise. The unpaired GAN-based methods EnlightenGAN and Cycle-Retinex introduce colour shifts and visible artefacts near the highlights, because they lack a paired reference for the test domain. Among supervised methods, RetinexFormer produces over-saturated colours and tends to amplify the existing illumination rather than transfer a target one; HVI-CIDNet improves colour fidelity but still suffers from blocky artefacts in dark regions; Reti-Diff generates plausible global illumination but often blurs fine textures; Multinex is closer to a balanced exposure but is limited by its very small parameter budget. CAP-VST, as a photorealistic style-transfer baseline, takes the same daytime reference as ours, yet the lighting it transfers is incomplete and the residual content fidelity is weaker, which causes both underexposed patches and over-saturated sky regions. In contrast, our RLTNet preserves the original scene structure and content, transfers a balanced illumination close to the reference, and produces fewest visible artefacts across all five samples.
 
 
 
