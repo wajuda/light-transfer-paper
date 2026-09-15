@@ -166,6 +166,17 @@ However, perfectly matched image pairs are often impractical to obtain in real-w
 
 %\cite{wct2} leveraged a wavelet corrected transfer to enhances photorealism. \cite{capvst} adopted the reversible residual network to keep the content affinity.
 
+\begin{figure*}[ht]
+
+\vspace{-.7in}
+%\centerline{\fbox{This figure intentionally left non-blan}}
+\centering
+\includegraphics[width = 1\linewidth]{figures/structurev2.pdf}
+%\vspace{in}
+\vspace{-.5in}
+\caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) Structure of the refiner network; (c) Struture of extractor module inside a reversible block.}\label{fig:structure}
+\end{figure*}
+
 \section{DATASET PREPARATION} \label{sec:dataset}
 
 
@@ -189,16 +200,6 @@ We introduce a new weakly paired dataset, whose image pairs are scene-consistent
 
 
 
-\begin{figure*}[t]
-
-\vspace{-.7in}
-%\centerline{\fbox{This figure intentionally left non-blan}}
-\centering
-\includegraphics[width = 1\linewidth]{figures/structurev2.pdf}
-%\vspace{in}
-\vspace{-.5in}
-\caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) Structure of the refiner network; (c) Struture of extractor module inside a reversible block.}\label{fig:structure}
-\end{figure*}
 
 
 \subsection{Reversible Lighting Transfer Network (RLTNet)}
@@ -421,7 +422,7 @@ Fig.~\ref{fig:compare} shows several test results of different methods. Overall,
 
 To understand the contribution of each component in RLTNet, we conduct an ablation study by progressively adding the frozen DCE++ frontend (\textit{pre}), the latent-space RegWCT via the reversible network (\textit{reversible}), and the refiner (\textit{refiner}), with results reported in Tab.~\ref{tab:ablation}. All variants are trained under the same protocol.
 
-Removing all three components reduces RLTNet to plain RGB-space WCT. Adding only the frozen DCE++ frontend mitigates the input-side noise and raises the overall brightness, which confirms that DCE++ primarily compensates for the lack of paired supervision. The reversible network provides a more discriminative feature space for lighting transfer. Finally, the full model with all three components attains the best scores, demonstrating that the three modules are complementary.
+Removing all three components reduces RLTNet to plain RGB-space WCT. Adding only the frozen DCE++ frontend mitigates the input-side noise and raises the overall brightness. The reversible network provides a more discriminative feature space for lighting transfer. Finally, the full model with all three components attains the best scores, demonstrating that the three modules are complementary.
 
 \begin{table}[htbp]
 \fontsize{8}{8}\selectfont
@@ -492,7 +493,7 @@ In this part, we demonstrate the generalizability of the proposed RLTNet without
 
 \section{CONCLUSION}
 
-In this paper, we proposed RLTNet (Reversible Lighting Transfer Network) for Nighttime Image Enhancement under a weakly-supervised setting. RLTNet operates entirely in a learned latent space: a reversible encoder produces invertible features, a Regularized WCT transfers the lighting from a daytime reference to a nighttime image stably, and a refiner adaptively blends the stylized output with the initially illuminated input. Extensive experiments on multiple datasets demonstrate the effectiveness of RLTNet. Our future work will focus on designing elaborate pixel-level supervision
+In this paper, we proposed RLTNet for Nighttime Image Enhancement under a weakly-supervised setting. RLTNet operates entirely in a learned latent space: a reversible encoder produces invertible features, a Regularized WCT transfers the lighting from a daytime reference to a nighttime image stably, and a refiner adaptively blends the stylized output with the initially illuminated input. Extensive experiments on multiple datasets demonstrate the effectiveness of RLTNet. Our future work will focus on designing elaborate pixel-level supervision
 to boost the detail restoration.
 \vfill\pagebreak
 
