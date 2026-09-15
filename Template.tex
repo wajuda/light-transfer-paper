@@ -122,7 +122,7 @@ Nowadays, deep learning-based approaches have recently emerged as the dominant p
 
 %, where a Retinex-guided transformer uses the generated reflectance and illumination priors to restore degraded images with strong generative capacity.
 
-%Jiang \etal~\cite{lldiff} presented a conditional diffusion model to produce satisfactory results with a powerful generation ability. More recently, Yan \etal~\cite{hvicidnet} proposed a new HVI color space to decouple brightness from chrominance and a two-branch CIDNet with cross-attention, achieving state-of-the-art results on ten paired benchmarks.  Beyond paired supervised learning, Li \etal~\cite{zerodce++} took a zero-reference unsupervised route, training a lightweight curve-estimation network with non-reference losses (spatial consistency, exposure control, color constancy and illumination smoothness), enabling real-time enhancement without any paired or unpaired data.
+%Jiang \etal~\cite{lldiff} presented a conditional diffusion model to produce satisfactory results with a powerful generation ability. More recently, Yan \etal~\cite{hvicidnet} proposed a new HVI color space to decouple brightness from chrominance and a two-branch CIDNet with cross-attention, achieving state-of-the-art results on ten paired benchmarks.  Beyond paired supervised learning, Li \etal~\cite{zero-dceplus} took a zero-reference unsupervised route, training a lightweight curve-estimation network with non-reference losses (spatial consistency, exposure control, color constancy and illumination smoothness), enabling real-time enhancement without any paired or unpaired data.
 
 However, perfectly matched image pairs are often impractical to obtain in real-world scenarios. Typically, low-light images in existing datasets are captured by adjusting camera exposure and ISO settings, as seen in LOLv1 (\cite{retinex}), LOLv2 (\cite{lolv2}) and SID (\cite{SID}). Such datasets fail to adequately represent the diverse degradation patterns present in authentic nighttime images or those captured under genuinely poor illumination conditions. To address these issues, we propose a novel NIE paradigm, termed as lighting transfer. Our main contributions are as follows: 
 
@@ -233,7 +233,7 @@ without any additional learnable parameters. Each extractor ${E}$ consists of th
 
 %The first $3 \times 3$ conv reduces the channel dimension to a low-dimensional bottleneck to lower the parameter count, the second is a dilated $3 \times 3$ conv that enlarges the receptive field, and the third $3 \times 3$ conv projects the channels back to the original dimension.
 
-Before the reversible network, we feed the nighttime image $I_{\text{night}}$ into a frozen DCE++ \cite{zerodce++} illumination module to obtain an initial enhanced image $\widetilde{I}_{\text{night}}$. Pre-enhancing makes its distribution closer to the daytime one and stabilizes the subsequent latent-space transformation.
+Before the reversible network, we feed the nighttime image $I_{\text{night}}$ into a frozen DCE++ \cite{zero-dceplus} illumination module to obtain an initial enhanced image $\widetilde{I}_{\text{night}}$. Pre-enhancing makes its distribution closer to the daytime one and stabilizes the subsequent latent-space transformation.
 
 %, especially under heavy illumination degradation.
 
@@ -365,7 +365,7 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 \subsection{Nighttime Image Enhancement}
 
 %For other methods used for comparison, both the optimal pretraining weights and the weights obtained through retraining on the DNP dataset are both evaluated.
-First, we conduct experiments on the DNP dataset. We compare RLTNet against seven representative NIE methods as well as one photorealistic style-transfer method. Zero-DCE++ (\cite{zerodce++}), EnlightenGAN (\cite{enlightengan}) and Cycle-Retinex (\cite{cycleretinex}) do not need paired training data. RetinexFormer (\cite{retinexformer}), HVI-CIDNet (\cite{hvicidnet}), Reti-Diff (\cite{retidiff}) and Multinex (\cite{multinex}) are supervised methods. CAP-VST (\cite{capvst}) is a photorealistic style-transfer method. We report five no-reference IQA metrics in  Tab.~\ref{tab:dnp} that collectively cover perceptual quality, structural naturalness and distortionI.
+First, we conduct experiments on the DNP dataset. We compare RLTNet against seven representative NIE methods as well as one photorealistic style-transfer method. Zero-DCE++ (\cite{zero-dceplus}), EnlightenGAN (\cite{enlightengan}) and Cycle-Retinex (\cite{cycleretinex}) do not need paired training data. RetinexFormer (\cite{retinexformer}), HVI-CIDNet (\cite{hvicidnet}), Reti-Diff (\cite{retidiff}) and Multinex (\cite{multinex}) are supervised methods. CAP-VST (\cite{capvst}) is a photorealistic style-transfer method. We report five no-reference IQA metrics in  Tab.~\ref{tab:dnp} that collectively cover perceptual quality, structural naturalness and distortionI.
 
 
 
