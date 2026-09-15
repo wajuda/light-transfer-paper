@@ -123,7 +123,18 @@ Nowadays, deep learning-based approaches have recently emerged as the dominant p
 %, where a Retinex-guided transformer uses the generated reflectance and illumination priors to restore degraded images with strong generative capacity.
 
 %Jiang \etal~\cite{lldiff} presented a conditional diffusion model to produce satisfactory results with a powerful generation ability. More recently, Yan \etal~\cite{hvicidnet} proposed a new HVI color space to decouple brightness from chrominance and a two-branch CIDNet with cross-attention, achieving state-of-the-art results on ten paired benchmarks.  Beyond paired supervised learning, Li \etal~\cite{zero-dceplus} took a zero-reference unsupervised route, training a lightweight curve-estimation network with non-reference losses (spatial consistency, exposure control, color constancy and illumination smoothness), enabling real-time enhancement without any paired or unpaired data.
+\begin{figure*}[htbp]
 
+\vspace{-.7in}
+%\centerline{\fbox{This figure intentionally left non-blan}}
+\centering
+\includegraphics[width = 1\linewidth]{figures/structurev2.pdf}
+%\vspace{in}
+\vspace{-.5in}
+\caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) Structure of the refiner network; (c) Struture of extractor module inside a reversible block.}\label{fig:structure}
+\end{figure*}
+
+\section{DATASET PREPARATION} \label{sec:dataset}
 However, perfectly matched image pairs are often impractical to obtain in real-world scenarios. Typically, low-light images in existing datasets are captured by adjusting camera exposure and ISO settings, as seen in LOLv1 \cite{Retinexnet}, LOLv2 \cite{lolv2} and SID \cite{SID}. Such datasets fail to adequately represent the diverse degradation patterns present in authentic nighttime images or those captured under genuinely poor illumination conditions. To address these issues, we propose a novel NIE paradigm, termed as lighting transfer. Our main contributions are as follows: 
 
 
@@ -166,18 +177,7 @@ However, perfectly matched image pairs are often impractical to obtain in real-w
 
 %\cite{wct2} leveraged a wavelet corrected transfer to enhances photorealism. \cite{capvst} adopted the reversible residual network to keep the content affinity.
 
-\begin{figure*}[ht]
 
-\vspace{-.7in}
-%\centerline{\fbox{This figure intentionally left non-blan}}
-\centering
-\includegraphics[width = 1\linewidth]{figures/structurev2.pdf}
-%\vspace{in}
-\vspace{-.5in}
-\caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) Structure of the refiner network; (c) Struture of extractor module inside a reversible block.}\label{fig:structure}
-\end{figure*}
-
-\section{DATASET PREPARATION} \label{sec:dataset}
 
 
 
