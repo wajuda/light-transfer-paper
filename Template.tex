@@ -85,12 +85,12 @@ Nighttime image enhancement, reversible network, Whiten-coloring Transfer
 
 
 
-Nighttime Image Enhancement (NIE) aims to improve the brightness and visibility of weakly illuminated images. The ideal outcome is to produce a result that appears as if it was captured under normal lighting conditions, while preserving the original content (\cite{surveyli}). NIE has been applied in various fields, including nighttime surveillance, autonomous driving, and photo editing (\cite{surveykbs}).
+Nighttime Image Enhancement (NIE) aims to improve the brightness and visibility of weakly illuminated images. The ideal outcome is to produce a result that appears as if it was captured under normal lighting conditions, while preserving the original content \cite{surveyli}. NIE has been applied in various fields, including nighttime surveillance, autonomous driving, and photo editing \cite{surveykbs}.
 
 
 
 
-%Traditional methods for the LLIE problem can be categorized primarily into histogram equalization-based approaches (\cite{he}) and Retinex-based approaches (\cite{retinex}). Histogram equalization-based methods aim to adjust the original pixel distribution. On the other hand, Retinex-based methods are founded on the Retinex theory, which posits that an image can be decomposed into an illumination component and a reflection component. Conventional methods often struggle with diverse lighting conditions and exhibit limited performance. 
+%Traditional methods for the LLIE problem can be categorized primarily into histogram equalization-based approaches \cite{he} and Retinex-based approaches \cite{retinex}. Histogram equalization-based methods aim to adjust the original pixel distribution. On the other hand, Retinex-based methods are founded on the Retinex theory, which posits that an image can be decomposed into an illumination component and a reflection component. Conventional methods often struggle with diverse lighting conditions and exhibit limited performance. 
 
 \begin{figure}[htbp]
 \setlength{\tabcolsep}{1pt} % 极小的列间距
@@ -356,7 +356,7 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 \section{EXPERIMENTS}
 
 
-%In the experiments, we first compare the performance of different methods on the DNP dataset. Then, we evaluated the generalization ability on Bdd100k (\cite{bdd100k}), ExDark (\cite{exdark}) and LLVIP (\cite{llvip}). Finally, ablative experiments are conducted to check the effect of each component.
+%In the experiments, we first compare the performance of different methods on the DNP dataset. Then, we evaluated the generalization ability on Bdd100k \cite{bdd100k}, ExDark \cite{exdark} and LLVIP \cite{llvip}. Finally, ablative experiments are conducted to check the effect of each component.
 
 
 %\subsection{Implementation Details}
@@ -365,7 +365,7 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 \subsection{Nighttime Image Enhancement}
 
 %For other methods used for comparison, both the optimal pretraining weights and the weights obtained through retraining on the DNP dataset are both evaluated.
-First, we conduct experiments on the DNP dataset. We compare RLTNet against seven representative NIE methods as well as one photorealistic style-transfer method. Zero-DCE++ (\cite{zero-dceplus}), EnlightenGAN (\cite{enlightengan}) and Cycle-Retinex (\cite{cycleretinex}) do not need paired training data. RetinexFormer (\cite{retinexformer}), HVI-CIDNet (\cite{hvicidnet}), Reti-Diff (\cite{retidiff}) and Multinex (\cite{multinex}) are supervised methods. CAP-VST (\cite{capvst}) is a photorealistic style-transfer method. We report five no-reference IQA metrics in  Tab.~\ref{tab:dnp} that collectively cover perceptual quality, structural naturalness and distortionI.
+First, we conduct experiments on the DNP dataset. We compare RLTNet against seven representative NIE methods as well as one photorealistic style-transfer method. Zero-DCE++ \cite{zero-dceplus}, EnlightenGAN \cite{enlightengan} and Cycle-Retinex \cite{cycleretinex} do not need paired training data. RetinexFormer \cite{retinexformer}, HVI-CIDNet \cite{hvicidnet}, Reti-Diff \cite{retidiff} and Multinex \cite{multinex} are supervised methods. CAP-VST \cite{capvst} is a photorealistic style-transfer method. We report five no-reference IQA metrics in  Tab.~\ref{tab:dnp} that collectively cover perceptual quality, structural naturalness and distortionI.
 
 
 
@@ -471,7 +471,7 @@ Night & Ours & Day & Night & Ours & Day \\
 \end{figure}
 
 
-In this part, we demonstrate the generalizability of the proposed RLTNet without extra training on three no-reference datasets, Bdd100k (\cite{bdd100k}), ExDark (\cite{exdark}) and LLVIP (\cite{llvip}). These datasets provide a variety of public driving data and road monitoring images. Since there is no paired reference image, we randomly select other daytime images as references to feed into the proposed RLTNet, as shown in Fig.~\ref{fig:public}. With daytime references from totally different scenes, the illumination conditions of nighttime images are effectively enhanced, and the key details are recovered. These findings highlight the great value for real-world scenarios such as surveillance systems and autonomous driving.
+In this part, we demonstrate the generalizability of the proposed RLTNet without extra training on three no-reference datasets, Bdd100k \cite{bdd100k}, ExDark \cite{exdark} and LLVIP \cite{llvip}. These datasets provide a variety of public driving data and road monitoring images. Since there is no paired reference image, we randomly select other daytime images as references to feed into the proposed RLTNet, as shown in Fig.~\ref{fig:public}. With daytime references from totally different scenes, the illumination conditions of nighttime images are effectively enhanced, and the key details are recovered. These findings highlight the great value for real-world scenarios such as surveillance systems and autonomous driving.
 
 
 
