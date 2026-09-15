@@ -134,7 +134,7 @@ Nowadays, deep learning-based approaches have recently emerged as the dominant p
 \caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) Structure of the refiner network; (c) Struture of extractor module inside a reversible block.}\label{fig:structure}
 \end{figure*}
 
-\section{DATASET PREPARATION} \label{sec:dataset}
+
 However, perfectly matched image pairs are often impractical to obtain in real-world scenarios. Typically, low-light images in existing datasets are captured by adjusting camera exposure and ISO settings, as seen in LOLv1 \cite{Retinexnet}, LOLv2 \cite{lolv2} and SID \cite{SID}. Such datasets fail to adequately represent the diverse degradation patterns present in authentic nighttime images or those captured under genuinely poor illumination conditions. To address these issues, we propose a novel NIE paradigm, termed as lighting transfer. Our main contributions are as follows: 
 
 
@@ -182,10 +182,66 @@ However, perfectly matched image pairs are often impractical to obtain in real-w
 
 
 %It is impossible to capture the nighttime and daytime images simultaneously. For some prevalent paired dataset, such as LOLv1 and LOLv2, the corresponding low-light images are captured by changing the camera sensor exposure and ISO settings. They can not reflect the various degradation problems in the night environment, like high noise level and complex light condition. Furthermore, the low-light and normal-light pairs need to be strictly aligned at the pixel level, which makes collecting more difficult. The unpaired dataset, where the low-light images and normal-light images are independent, can not provide precise light information, increasing the learning complexity.
-
+\section{DATASET PREPARATION} \label{sec:dataset}
 
 We introduce a new weakly paired dataset, whose image pairs are scene-consistent but semantically variant. Specifically, the image pairs are taken in the same scene during the day and at night, respectively. Thus, the image pairs are able to reflect the real degradation problem. Besides, dynamic objects (e.g., vehicles, pedestrians) may appear, disappear, or change positions at different times. It is impossible and unnecessary to perfectly match them at the pixel level, which has greatly reduced the difficulty of collection. In short, we refer to this readily available dataset as the DNP (Daytime-Nighttime image Pairs). We used a mobile phone camera with default parameters to collect 344 pairs of images (317 for training and 27 for testing) from different scenes. Examples of DNP and the difference with other datasets are shown in Fig.\ref{fig:dataset}.
-
+\begin{figure*}[htbp]
+\setlength{\tabcolsep}{0.5pt}
+\centering
+\begin{tabular}{cccccccc}
+\includegraphics[width = 0.115\linewidth]{figures/compare/night/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/ours/1_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/day/1 (2).jpg} \\
+\includegraphics[width = 0.115\linewidth]{figures/compare/night/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/ours/6_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/day/6 (2).jpg} \\
+\includegraphics[width = 0.115\linewidth]{figures/compare/night/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/ours/8_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/day/8 (2).jpg} \\
+\includegraphics[width = 0.115\linewidth]{figures/compare/night/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/ours/14_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/day/14 (11).jpg} \\
+\includegraphics[width = 0.115\linewidth]{figures/compare/night/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/ours/15_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/day/15 (1).jpg} \\
+\includegraphics[width = 0.115\linewidth]{figures/compare/night/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/ours/17_box.jpg} &
+\includegraphics[width = 0.115\linewidth]{figures/compare/day/17 (3).jpg} \\
+Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RLTNet) & day \\
+\end{tabular}
+\vspace{-.1in}
+\caption{Visual comparison on the DNP test set. The leftmost is the original nighttime input, while the rightmost is the daytime reference. The red rectangle on each enhanced result highlights the same spatial region across all methods.}\label{fig:compare}
+\end{figure*}
 
 \section{METHODOLOGY}
 
@@ -304,63 +360,7 @@ where the VGG-19 network (from ReLu1$\_$1 to ReLu4$\_$1) is employed to obtain $
 
 
 
-\begin{figure*}[htbp]
-\setlength{\tabcolsep}{0.5pt}
-\centering
-\begin{tabular}{cccccccc}
-\includegraphics[width = 0.115\linewidth]{figures/compare/night/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/ours/1_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/day/1 (2).jpg} \\
-\includegraphics[width = 0.115\linewidth]{figures/compare/night/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/ours/6_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/day/6 (2).jpg} \\
-\includegraphics[width = 0.115\linewidth]{figures/compare/night/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/ours/8_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/day/8 (2).jpg} \\
-\includegraphics[width = 0.115\linewidth]{figures/compare/night/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/ours/14_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/day/14 (11).jpg} \\
-\includegraphics[width = 0.115\linewidth]{figures/compare/night/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/ours/15_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/day/15 (1).jpg} \\
-\includegraphics[width = 0.115\linewidth]{figures/compare/night/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/zero_dce/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/enlightengan/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/retinexformer/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/reti_diff/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/cap_vst/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/ours/17_box.jpg} &
-\includegraphics[width = 0.115\linewidth]{figures/compare/day/17 (3).jpg} \\
-Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RLTNet) & day \\
-\end{tabular}
-\vspace{-.1in}
-\caption{Visual comparison on the DNP test set. The leftmost is the original nighttime input, while the rightmost is the daytime reference. The red rectangle on each enhanced result highlights the same spatial region across all methods.}\label{fig:compare}
-\end{figure*}
+
 
 \section{EXPERIMENTS}
 
@@ -404,7 +404,11 @@ RLTNet (proposed)& \textbf{63.13} & \textbf{79.23} & \textbf{19.64} & \textbf{2.
 
 
 
-Our method outperforms other methods in all metric, which demonstrate the efficiency of the proposed RLTNet. Compared with directly using the optimal pre-training weights, other LLIE methods perform worse after retraining on the DNP dataset. Thus we report only the results with pretrained weights, respectively.
+Our method outperforms other methods in all metric, which demonstrate the efficiency of the proposed RLTNet. Fig.~\ref{fig:compare} shows several test results of different methods. Overall, RLTNet produces illumination that is most similar to the daytime reference while remaining natural. Particularly, it achieves the best exposure suppression, fine-detail recovery, colour fidelity and contrast among all compared methods.
+
+
+
+%Compared with directly using the optimal pre-training weights, other LLIE methods perform worse after retraining on the DNP dataset. Thus we report only the results with pretrained weights, respectively.
 
 %A reason is that in their original training process, datasets containing more images and with better image quality were used. The true daytime and nighttime images of the DNP dataset make it more difficult to learn valuable information. Conversely, the proposed RLTNet learns to transfer the lighting condition of daytime images to nighttime images, rather than learning a brutal mapping to enhance the nighttime images. Therefore, the proposed RLTNet outperforms other methods on the weakly paired dataset.
 
@@ -412,7 +416,6 @@ Our method outperforms other methods in all metric, which demonstrate the effici
 
 %; the patch in the bottom-right corner shows a 1.5$\times$ zoom of that region for a closer look at fine-grained colour and texture differences. Daytime references are not pixel-aligned with the night inputs and serve only as a global lighting guide.
 
-Fig.~\ref{fig:compare} shows several test results of different methods. Overall, RLTNet produces illumination that is most similar to the daytime reference while remaining natural. Particularly, it achieves the best exposure suppression, fine-detail recovery, colour fidelity and contrast among all compared methods.
 
 %Zero-DCE++ tends to under-enhance, leaving the image dim with residual low-frequency noise. The unpaired GAN-based methods EnlightenGAN and Cycle-Retinex introduce colour shifts and visible artefacts near the highlights, because they lack a paired reference for the test domain. Among supervised methods, RetinexFormer produces over-saturated colours and tends to amplify the existing illumination rather than transfer a target one; HVI-CIDNet improves colour fidelity but still suffers from blocky artefacts in dark regions; Reti-Diff generates plausible global illumination but often blurs fine textures; Multinex is closer to a balanced exposure but is limited by its very small parameter budget. CAP-VST, as a photorealistic style-transfer baseline, takes the same daytime reference as ours, yet the lighting it transfers is incomplete and the residual content fidelity is weaker, which causes both underexposed patches and over-saturated sky regions. In contrast, our RLTNet preserves the original scene structure and content, transfers a balanced illumination close to the reference, and produces fewest visible artefacts across all five samples.
 
@@ -420,10 +423,9 @@ Fig.~\ref{fig:compare} shows several test results of different methods. Overall,
 
 \subsection{Ablation Study}
 
-To understand the contribution of each component in RLTNet, we conduct an ablation study by progressively adding the frozen DCE++ frontend (\textit{pre}), the latent-space RegWCT via the reversible network (\textit{reversible}), and the refiner (\textit{refiner}), with results reported in Tab.~\ref{tab:ablation}. All variants are trained under the same protocol.
+To understand the contribution of each component in RLTNet, we conduct an ablation study by progressively adding the frozen DCE++ frontend (\textit{pre}), the latent-space RegWCT via the reversible network (\textit{reversible}), and the refiner (\textit{refiner}), with results reported in Tab.~\ref{tab:ablation}. All variants are trained under the same protocol. The full model with all three components attains the best scores, demonstrating that the three modules are complementary.
 
-Removing all three components reduces RLTNet to plain RGB-space WCT. Adding only the frozen DCE++ frontend mitigates the input-side noise and raises the overall brightness. The reversible network provides a more discriminative feature space for lighting transfer. Finally, the full model with all three components attains the best scores, demonstrating that the three modules are complementary.
-
+%Removing all three components reduces RLTNet to plain RGB-space WCT. Adding only the frozen DCE++ frontend mitigates the input-side noise and raises the overall brightness. The reversible network provides a more discriminative feature space for lighting transfer. Finally, t
 \begin{table}[htbp]
 \fontsize{8}{8}\selectfont
 \setlength{\tabcolsep}{2pt}
