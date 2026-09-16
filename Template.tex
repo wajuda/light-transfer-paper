@@ -4,6 +4,7 @@
 %          IEEEbib.bst - IEEE bibliography style file.
 % --------------------------------------------------------------------------
 \documentclass{article}
+\usepackage{enumitem}
 \usepackage{amssymb}
 \usepackage{epstopdf}
 \usepackage{spconf,amsmath,hyperref}
@@ -24,7 +25,7 @@
 
 % Title.
 % ------
-\title{Lighting Transfer for Nighttime Image Enhancement with Weak Daytime References}
+\title{Lighting Transfer for Nighttime Image Enhancement with Weakly Paired Daytime References}
 %
 % Single address.
 % ---------------
@@ -36,7 +37,7 @@
 %$^{\dagger}$ China Tower Corporation Limited, Beijing, China}
 
 \name{Junda Wang$^{1}$, Rundong Cao$^{2}$, Jiazhong Yu$^{2}$. \\
-\itshape Linsu Shi$^{2}$, Ziwei Liu$^{2}$, Sheng Cao$^{2}$, Tong Lin$^{1,\star}$\thanks{$^{\star}$Corresponding author, \email{lintong@pku.edu.cn} }}
+\itshape Linsu Shi$^{2}$, Ziwei Liu$^{2}$, Sheng Cao$^{2}$, Tong Lin$^{1,\star}$\thanks{$^{\star}$Corresponding author: \email{lintong@pku.edu.cn} }}
 
 \address{$^{1}$ State Key Laboratory of General Artificial Intelligence,\\
 School of Intelligence Science and Technology, Peking University, Beijing, China\\
@@ -67,7 +68,7 @@ $^{2}$ China Tower Corporation Limited, Beijing, China}
 \maketitle
 %
 \begin{abstract}
-Nighttime Image Enhancement (NIE) aims to improve the visibility of weakly illuminated images. Existing supervised methods rely on low/normal-light pairs captured from short/long exposure variation, which generalize poorly to real nighttime scenes. To overcome this, we propose the Reversible Lighting Transfer Network (RLTNet), which enhances a nighttime image by transferring the illumination of a weakly paired daytime reference. RLTNet maps each daytime and nighttime image pair into a compact latent space with a reversible encoder that guarantees exact invertibility without a separately trained decoder. In this latent space, a Regularized Whiten--Colorize Transfer (RegWCT) aligns the feature covariance of night images with that of day images. A spatial-aware refiner then adaptively blends the stylized output with the nighttime input to avoid overexposure. Experiments on collected Daytime-Nighttime image pairs (DNP) and other public night image dataset show the superior performance of our method.
+Nighttime Image Enhancement (NIE) aims to improve the visibility of weakly illuminated images. Existing supervised methods rely on low/normal-light pairs captured from short/long exposure variation, which generalize poorly to real nighttime scenes. To overcome this, we propose the Reversible Lighting Transfer Network (RLTNet), which enhances a nighttime image by transferring the illumination of a weakly paired daytime reference. RLTNet maps each pair of daytime and nighttime image into a compact latent space with a reversible encoder that guarantees exact invertibility without a separately trained decoder. In this latent space, a Regularized Whitening and Coloring Transform (RegWCT) aligns the feature covariance of night images with that of day images. A spatial-aware refiner then adaptively blends the stylized output with the nighttime input to avoid overexposure. Experiments on collected Daytime-Nighttime image pairs (DNP) and other public night image dataset show the superior performance of our method.
 
 
 
@@ -76,7 +77,7 @@ Nighttime Image Enhancement (NIE) aims to improve the visibility of weakly illum
 \end{abstract}
 %
 \begin{keywords}
-Nighttime image enhancement, reversible network, Whiten-coloring Transfer
+Nighttime image enhancement, reversible network, Whitening and coloring transform
 \end{keywords}
 %
 \section{Introduction}
@@ -115,10 +116,10 @@ Nighttime Image Enhancement (NIE) aims to improve the brightness and visibility 
      
 \end{tabular}
 %\vspace{-in}
-\caption{The comparison of different dataset: perfectly paired, unpaired and the proposed weakly paired dataset. The low-light images on the top row are multiplied by 3 in piexel values for better visual effect.}\label{fig:dataset}
+\caption{The comparison of different datasets: perfectly paired, unpaired and the proposed weakly paired dataset. The low-light images on the top row are multiplied by 3 in piexel values for better visual effect.}\label{fig:dataset}
 \end{figure}
 Nowadays, deep learning-based approaches have recently emerged as the dominant paradigm in NIE, owing to their powerful ability to model complex non-linear relationships~
-\cite{lldiff,invertibleLLIE}. Chen \etal~\cite{Retinexnet} proposed the first Retinex-based deep networks that adaptively decompose the input images and used another Enhance-Net to adjust the illumination. In addition, several advanced models in other domains have been migrated to NIE for superior performance. Cai \etal~\cite{retinexformer} designed an Illumination-Guided Transformer (IGT) that captures the non-local relationship of regions with different lighting conditions. He \etal~\cite{retidiff} combined the Retinex prior with a latent diffusion model.
+\cite{lldiff,invertibleLLIE}. Chen \etal~\cite{Retinexnet} proposed the first Retinex-based deep networks that adaptively decompose the input images and used another Enhance-Net to adjust the illumination. In addition, several advanced models in other domains have been migrated to NIE for superior performance. Cai \etal~\cite{retinexformer} designed an Illumination-Guided Transformer (IGT) that captures the non-local relationship of regions under different lighting conditions. He \etal~\cite{retidiff} combined the Retinex prior with a latent diffusion model.
 
 %, where a Retinex-guided transformer uses the generated reflectance and illumination priors to restore degraded images with strong generative capacity.
 
@@ -131,7 +132,7 @@ Nowadays, deep learning-based approaches have recently emerged as the dominant p
 \includegraphics[width = 1\linewidth]{figures/structurev2.pdf}
 %\vspace{in}
 \vspace{-.5in}
-\caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) Structure of the refiner network; (c) Struture of extractor module inside a reversible block.}\label{fig:structure}
+\caption{(a) Architecture illustration of the proposed Reversible Lighting Transfer Network (RLTNet), including the reversible block and Regularized WCT (RegWCT); (b) the refiner network; (c) the extractor module inside a reversible block.}\label{fig:structure}
 \end{figure*}
 
 
@@ -146,12 +147,12 @@ However, perfectly matched image pairs are often impractical to obtain in real-w
 
 %The daytime and nighttime image pairs are captured at the same scene at different time and illumination conditions. Besides, moving objects (\textit{e.g.}, pedestrians, cars and bycycles) are allowed to occur or vanish and there is no need to align them. Such images pairs are practical to be collected and can reflect true illumination conditions
 
-\begin{itemize}
-    \item We collect a weakly paired dataset, called DNP (Daytime-Nighttime image Pairs). Data pairs record similar scenes and allow for variations in the moving objects (e.g., vehicles and pedestrians). DNP captures genuine day/night illumination transition making it more applicable to real-world scenarios.
+\begin{itemize}[itemsep=2pt,parsep=0pt,topsep=3pt,leftmargin=*,itemindent=0em]
+    \item We collect a weakly paired dataset, called DNP (Daytime-Nighttime image Pairs). Data pairs record similar scenes and allow for variations in the moving objects (e.g., vehicles and pedestrians). DNP captures genuine day/night illumination transition, making it more applicable to real-world scenarios.
 
 
     
-    \item We introduce a novel NIE paradigm, \textit{i.e.}, lighting transfer, for the weakly supervised setting. Concretely, we employ the reversible Reversible Lighting Transfer Network (RLTNet) to obtain the compact features of both daytime and nighttime images. Then, the Regularized WCT (RegWCT) transfers the lighting from day to night stably.
+    \item We introduce a novel lighting transfer framework for the weakly supervised setting. Concretely, we employ the reversible Reversible Lighting Transfer Network (RLTNet) to obtain the compact features of both daytime and nighttime images. Then, the Regularized WCT (RegWCT) transfers the lighting from day to night stably.
      
 
 
@@ -245,6 +246,38 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 
 \section{METHODOLOGY}
 
+\begin{figure*}[htb]
+\setlength{\tabcolsep}{0.5pt}
+\centering
+\begin{tabular}{cccccc}
+Night & Output & Day & Night & Output & Day \\
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b1ee702d-4a193906_x15.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b1ee702d-4a193906_exdark_4.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/exdark (4).JPG} &
+\hspace{0.2em}
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b4a63a7e-74155969_x15.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b4a63a7e-74155969_bdd_5.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (5).jpg} \\
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_1_x15.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_1_bdd_1.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (1).jpg} &
+\hspace{0.2em}
+
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_2_x15.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_2_bdd_2.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (2).jpg} \\
+
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_1_x15.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_1_bdd_3.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (3).jpg} &
+\hspace{0.2em}
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_2_night_x15.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_2_llvip_2.jpg} &
+\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/llvip (2).jpg} \\
+\end{tabular}
+\vspace{-.2in}
+\caption{Visual results on Bdd100k \cite{bdd100k}, ExDark \cite{exdark} and LLVIP \cite{llvip} (first, second, and third rows, respectively).}\label{fig:public}
+\end{figure*}
 
 %\subsection{Motivation and a Toy Experiment}\label{sec:motivation}
 
@@ -258,33 +291,33 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 
 
 
-\subsection{Reversible Lighting Transfer Network (RLTNet)}
-\label{sec:RLTNet}
+%\subsection{Reversible Lighting Transfer Network (RLTNet)}
+%\label{sec:RLTNet}
 
-The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. It consists of three components: reversible network, Regularized Whiten-Colorize Transfer (RegWCT) and the Refiner network.
+The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. It consists of three components: reversible network, Regularized Whitening and coloring Transform (RegWCT) and the Refiner network.
 
 %It consists of three components: a \emph{reversible network} that produces invertible latent representations of images, a Regularized Whiten--Colorize Transfer (RegWCT) that transfers lighting in the latent space, and a refiner network that adaptively blends the stylized output with the night input.
 
-\subsubsection{Reversible Network}
+\subsection{Reversible Network}
 \label{sec:revnet}
 %Nighttime image enhancement (NIE) requires the enhanced result to preserve the original content faithfully. Generic encoder--decoder networks tend to lose fine details and produce the distortion, which makes them more suitable for artistic style transfer than for realistic enhancement. In contrast, 
 The reversible network guarantees an exact reconstruction of the input from its latent represetation, eliminating the need for a separately trained decoder and ensuring that the content is perfectly preserved by construction.
 
 
 
-Concretely, the reversible encoder takes a daytime or nighttime image $I \in \mathbb{R}^{3 \times H \times W}$ and splits it into two halves along the channel dimension, name$\bm{x}_1$ and $\bm{x}_2$:
+Concretely, the reversible encoder takes a daytime or nighttime image $I \in \mathbb{R}^{3 \times H \times W}$ and splits it into two halves along the channel dimension, namely $\bm{x}_1$ and $\bm{x}_2$:
 \begin{equation}
-\begin{aligned}
-    \bm{z}_2 &= \bm{x}_2 + {E}_1(\bm{x}_1), \\
-    \bm{z}_1 &= \bm{x}_1 + {E}_2(\bm{z}_2),
-\end{aligned}
+%\begin{aligned}
+    \bm{z}_2 = \bm{x}_2 + {E}_1(\bm{x}_1), 
+    \bm{z}_1 = \bm{x}_1 + {E}_2(\bm{z}_2),
+%\end{aligned}
 \end{equation}
 where ${E}_1$ and ${E}_2$ are extractor modules. The forward pass produces the latent features $\bm{Z}$. The inverse pass recovers the input analytically,
 \begin{equation}
-\begin{aligned}
-    \bm{x}_1 &= \bm{z}_1 - {E}_2(\bm{z}_2), \\
-    \bm{x}_2 &= \bm{z}_2 - {E}_1(\bm{x}_1),
-\end{aligned}
+%\begin{aligned}
+    \bm{x}_1 = \bm{z}_1 - {E}_2(\bm{z}_2), 
+    \bm{x}_2 = \bm{z}_2 - {E}_1(\bm{x}_1),
+%\end{aligned}
 \end{equation}
 without any additional learnable parameters. Each extractor ${E}$ consists of three stacked convolutional layers as Fig.~\ref{fig:structure} (c). 
 
@@ -294,9 +327,9 @@ Before the reversible network, we feed the nighttime image $I_{\text{night}}$ in
 
 %, especially under heavy illumination degradation.
 
-\subsubsection{Regularized Whiten--Colorize Transfer}
+\subsection{Regularized Whitening and Coloring Transform}
 
-After the reversible encoder, we obtain the latent codes $Z_{\text{day}}$ and $Z_{\text{night}}$ for the daytime and nighttime images, respectively. We then perform the lighting transfer with the Whiten--Colorize Transform (WCT) \cite{capvst}, which aligns the inter-channel covariance of the content feature with that of the style feature. 
+After the reversible encoder, we obtain the latent codes $Z_{\text{day}}$ and $Z_{\text{night}}$ for the daytime and nighttime images, respectively. We then perform the lighting transfer with the Whitening and Coloring Transform (WCT) \cite{capvst}, which aligns the inter-channel covariance of the content feature with that of the style feature. 
 
 %WCT consists of two steps: whitening the content feature to remove its original statistics and then coloring it with the target statistics.
 
@@ -322,23 +355,23 @@ Let ${\sigma^2} = \mathrm{tr}(\bm{\Sigma}_Z)/C$ be the average variance. We mix 
 \begin{equation}
     \widetilde{\bm{\Sigma}}_Z = (1 - \alpha)\, \bm{\Sigma}_Z + \alpha\, {\sigma^2}\, \bm{I}, 
 \end{equation}
-which lifts near-zero eigenvalues and prevents excessive inverse-whitening gains..
+which lifts near-zero eigenvalues and prevents excessive inverse-whitening gains.
 
-\noindent\textbf{Transfer-matrix gain clipping.}
-The transfer matrix that maps centered content features to style-colored features is
+\noindent\textbf{Transform-matrix gain clipping.}
+The transform matrix that maps centered content features to style-colored features is
 \begin{equation}
     \bm{T} = \bm{\Sigma}_{Z_{\text{day}}}^{+1/2}\, \widetilde{\bm{\Sigma}}_{Z_{\text{night}}}^{-1/2}.
 \end{equation}
-We bound the spectral norm of $\bm{T}$ by clamping its singular values,
+We bound the spectral norm of $\bm{T}$ with the maximum singular value of $s_{max}$,
 \begin{equation}
     \widehat{\bm{T}} = \bm{U}\, \mathrm{diag}\!\left(\min(\sigma_i,\; s_{\max})\right)\, \bm{V}^{\!\top},
 \end{equation}
-where $\bm{T} = \bm{U}\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, \bm{V}^{\!\top}$ is the SVD of $\bm{T}$ and $s_{\max}$ is the gain cap. The final transfer reads
+where $\bm{T} = \bm{U}\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, \bm{V}^{\!\top}$ is the SVD of $\bm{T}$ and $s_{\max}$ is the gain cap. The final transform reads
 \begin{equation}
     Z_{\text{stylized}} = \widehat{\bm{T}}\, (Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
 \end{equation}
 
-\subsubsection{Refiner Network}
+\subsection{Refiner Network}
 \label{sec:alphanet}
 
 A global WCT output often is prone to overexposure in certain areas, such as the areas of street lamps at night. To address this, we introduce a refiner that adaptively mixes the stylized $I_{stylized}$ and the initial enhanced night image $\widetilde{I}_{\text{night}}$. Refiner network is consist of a channel-wise branch using a Squeeze-and-Excitation block that re-weights feature channels, and a spatial-wise branch using stacked convolutions that captures local spatial context. The two branches are followed by a sigmoid, producing an attention map $\bm{\beta} \in [0, 1]^{1 \times H \times W}$. The final enhanced image is then reconstructed as:
@@ -356,7 +389,6 @@ In the weakly paired dataset, real daytime images have scenes similar to those o
 \end{split}
 \end{equation}
 where the VGG-19 network (from ReLu1$\_$1 to ReLu4$\_$1) is employed to obtain $L_{style}$.
-
 
 
 
@@ -430,7 +462,7 @@ To understand the contribution of each component in RLTNet, we conduct an ablati
 \fontsize{8}{8}\selectfont
 \setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.05}
-\caption{Ablation on DNP test set. \textit{pre}: frozen DCE++ frontend. \textit{reversible}: reversible network. \textit{refiner}: refiner mudule. \textbf{Bold} indicates the best, \underline{underline} the second best.}
+\caption{Ablation on DNP test set.}
 \label{tab:ablation}
 \centering
 \begin{tabular}{ccc|ccccc}
@@ -448,41 +480,10 @@ $\checkmark$   & $\checkmark$   & $\checkmark$   & \textbf{63.13}    & \textbf{7
 \end{table}
 
 \subsection{Generalization Evaluation}
-\begin{figure}[htb]
-\setlength{\tabcolsep}{0.5pt}
-\centering
-\begin{tabular}{cccccc}
-Night & Ours & Day & Night & Ours & Day \\
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b1ee702d-4a193906_x15.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b1ee702d-4a193906_exdark_4.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/exdark (4).JPG} &
-\hspace{0.2em}
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b4a63a7e-74155969_x15.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/b4a63a7e-74155969_bdd_5.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (5).jpg} \\
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_1_x15.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_1_bdd_1.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (1).jpg} &
-\hspace{0.2em}
-
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_2_x15.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/exdark_2_bdd_2.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (2).jpg} \\
-
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_1_x15.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_1_bdd_3.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/bdd (3).jpg} &
-\hspace{0.2em}
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_2_night_x15.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public_crop/llvip_2_llvip_2.jpg} &
-\includegraphics[width = 0.16\linewidth, height = 0.09\linewidth]{figures/public/llvip (2).jpg} \\
-\end{tabular}
-\vspace{-.2in}
-\caption{Visual results on Bdd100k, ExDark and LLVIP datasets (first, second, and third rows, respectively).}\label{fig:public}
-\end{figure}
 
 
-In this part, we demonstrate the generalizability of the proposed RLTNet without extra training on three no-reference datasets, Bdd100k \cite{bdd100k}, ExDark \cite{exdark} and LLVIP \cite{llvip}. These datasets provide a variety of public driving data and road monitoring images. Since there is no paired reference image, we randomly select other daytime images as references to feed into the proposed RLTNet, as shown in Fig.~\ref{fig:public}. With daytime references from totally different scenes, the illumination conditions of nighttime images are effectively enhanced, and the key details are recovered. These findings highlight the great value for real-world scenarios such as surveillance systems and autonomous driving.
+
+In this part, we demonstrate the generalizability of the proposed RLTNet without extra training on three no-reference datasets. These datasets provide a variety of public driving data and road monitoring images. Since there is no paired reference image, we randomly select other daytime images as references, as shown in Fig.~\ref{fig:public}. With daytime references from totally different scenes, the illumination conditions of nighttime images are effectively enhanced, and the key details are recovered. These findings highlight the great value for real-world scenarios such as surveillance systems and autonomous driving.
 
 
 
