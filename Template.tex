@@ -246,42 +246,7 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 
 \section{METHODOLOGY}
 
-\begin{figure*}[htb]
-\setlength{\tabcolsep}{0.5pt}
-\centering
-\begin{tabular}{ccccccccc}
-Night & Output & Day & Night & Output & Day & Night & Output & Day \\
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b1ee702d-4a193906_x15.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b1ee702d-4a193906_exdark_4.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/exdark (4).JPG} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b4a63a7e-74155969_x15.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b4a63a7e-74155969_bdd_5.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (5).jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/b4c86653-aafa1676_x15_box.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/rltnet_bdd100k_box.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/c5030241-68561ce7_x15.jpg} \\
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_1_x15.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_1_bdd_1.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (1).jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_2_x15.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_2_bdd_2.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (2).jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/exdark_2015_06346_x15_box.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/rltnet_exdark_box.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/2015_00387_x15.jpg} \\
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_1_x15.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_1_bdd_3.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (3).jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_2_night_x15.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_2_llvip_2.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/llvip (2).jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/llvip_040192_x15_box.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/rltnet_llvip_box.jpg} &
-\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/250110_x15.jpg} \\
-\end{tabular}
-\vspace{-.2in}
-\caption{Visual results on Bdd100k \cite{bdd100k}, ExDark \cite{exdark} and LLVIP \cite{llvip} (first, second, and third rows, respectively).}\label{fig:public}
-\end{figure*}
+
 
 %\subsection{Motivation and a Toy Experiment}\label{sec:motivation}
 
@@ -375,6 +340,42 @@ where $\bm{T} = \bm{U}\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, \bm{V}^{\!\
     Z_{\text{stylized}} = \widehat{\bm{T}}\, (Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
 \end{equation}
 
+\begin{figure*}[htb]
+\setlength{\tabcolsep}{0.5pt}
+\centering
+\begin{tabular}{ccccccccc}
+Night & Output & Day & Night & Output & Day & Night & Output & Day \\
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b1ee702d-4a193906_x15.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b1ee702d-4a193906_exdark_4.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/exdark (4).JPG} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b4a63a7e-74155969_x15.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/b4a63a7e-74155969_bdd_5.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (5).jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/b4c86653-aafa1676_x15_box.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/rltnet_bdd100k_box.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/c5030241-68561ce7_x15.jpg} \\
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_1_x15.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_1_bdd_1.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (1).jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_2_x15.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/exdark_2_bdd_2.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (2).jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/exdark_2015_06346_x15_box.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/rltnet_exdark_box.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/2015_00387_x15.jpg} \\
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_1_x15.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_1_bdd_3.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/bdd (3).jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_2_night_x15.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public_crop/llvip_2_llvip_2.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/llvip (2).jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/llvip_040192_x15_box.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/rltnet_llvip_box.jpg} &
+\includegraphics[width = 0.11\linewidth, height = 0.06\linewidth]{figures/public/250110_x15.jpg} \\
+\end{tabular}
+\vspace{-.2in}
+\caption{Visual results on Bdd100k \cite{bdd100k}, ExDark \cite{exdark} and LLVIP \cite{llvip} (first, second, and third rows, respectively).}\label{fig:public}
+\end{figure*}
 \subsection{Refiner Network}
 \label{sec:alphanet}
 
@@ -410,7 +411,7 @@ where the VGG-19 network (from ReLu1$\_$1 to ReLu4$\_$1) is employed to obtain $
 \subsection{Nighttime Image Enhancement}
 
 %For other methods used for comparison, both the optimal pretraining weights and the weights obtained through retraining on the DNP dataset are both evaluated.
-First, we conduct experiments on the DNP dataset. We compare RLTNet against seven representative NIE methods as well as one photorealistic style-transfer method. Zero-DCE++ \cite{zero-dceplus}, EnlightenGAN \cite{enlightengan} and Cycle-Retinex \cite{cycleretinex} do not need paired training data. RetinexFormer \cite{retinexformer}, HVI-CIDNet \cite{hvicidnet}, Reti-Diff \cite{retidiff} and Multinex \cite{multinex} are supervised methods. CAP-VST \cite{capvst} is a photorealistic style-transfer method. We report five no-reference IQA metrics in  Tab.~\ref{tab:dnp} that collectively cover perceptual quality, structural naturalness and distortionI.
+First, we conduct experiments on the DNP dataset. We compare RLTNet against seven representative NIE methods as well as one photorealistic style-transfer method. Zero-DCE++ \cite{zero-dceplus}, EnlightenGAN \cite{enlightengan} and Cycle-Retinex \cite{cycleretinex} do not need paired training data. RetinexFormer \cite{retinexformer}, HVI-CIDNet \cite{hvicidnet}, Reti-Diff \cite{retidiff} and Multinex \cite{multinex} are supervised methods. CAP-VST \cite{capvst} is a photorealistic style-transfer method. We report five no-reference IQA metrics in  Tab.~\ref{tab:dnp} that collectively cover perceptual quality, structural naturalness and distortion.
 
 
 
@@ -459,7 +460,7 @@ Our method outperforms other methods in all metric, which demonstrate the effici
 
 \subsection{Ablation Study}
 
-To understand the contribution of each component in RLTNet, we conduct an ablation study by progressively adding the frozen DCE++ frontend (\textit{pre}), the latent-space RegWCT via the reversible network (\textit{reversible}), and the refiner (\textit{refiner}), with results reported in Tab.~\ref{tab:ablation}. All variants are trained under the same protocol. The full model with all three components attains the best scores, demonstrating that the three modules are complementary.
+We conduct an ablation study by progressively adding the frozen DCE++ frontend (\textit{pre}), the latent-space RegWCT via the reversible network (\textit{reversible}), and the refiner (\textit{refiner}), with results reported in Tab.~\ref{tab:ablation}. All variants are trained under the same protocol. The full model with all three components attains the best scores, demonstrating that the three modules are complementary.
 
 %Removing all three components reduces RLTNet to plain RGB-space WCT. Adding only the frozen DCE++ frontend mitigates the input-side noise and raises the overall brightness. The reversible network provides a more discriminative feature space for lighting transfer. Finally, t
 \begin{table}[htbp]
@@ -487,7 +488,7 @@ $\checkmark$   & $\checkmark$   & $\checkmark$   & \textbf{63.13}    & \textbf{7
 
 
 
-In this part, we demonstrate the generalizability of the proposed RLTNet without extra training on three no-reference datasets. These datasets provide a variety of public driving data and road monitoring images. Since there is no paired reference image, we randomly select other daytime images as references, as shown in Fig.~\ref{fig:public}. With daytime references from totally different scenes, the illumination conditions of nighttime images are effectively enhanced, and the key details are recovered. These findings highlight the great value for real-world scenarios such as surveillance systems and autonomous driving.
+In this part, we demonstrate the generalizability of the proposed RLTNet without extra training on three no-reference datasets. These datasets provide a variety of public driving data and road monitoring images. Since there is no paired reference image, we randomly select other daytime images as references, as shown in Fig.~\ref{fig:public}. With daytime references from totally different scenes, the illumination conditions of nighttime images are effectively enhanced, and the key details are recovered. These findings highlight the great value scenarios such as surveillance systems and autonomous driving.
 
 
 
