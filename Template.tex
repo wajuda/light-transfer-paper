@@ -68,7 +68,7 @@ $^{2}$ China Tower Corporation Limited, Beijing, China}
 \maketitle
 %
 \begin{abstract}
-Nighttime Image Enhancement (NIE) aims to improve the visibility of weakly illuminated images. Existing supervised methods rely on low/normal-light pairs captured from short/long exposure variation, which generalize poorly to real nighttime scenes. To overcome this, we propose the Reversible Lighting Transfer Network (RLTNet), which enhances a nighttime image by transferring the illumination of a weakly paired daytime reference. RLTNet maps each pair of daytime and nighttime image into a compact latent space with a reversible encoder that guarantees exact invertibility without a separately trained decoder. In this latent space, a Regularized Whitening and Coloring Transform (RegWCT) aligns the feature covariance of night images with that of day images. A spatial-aware refiner then adaptively blends the stylized output with the nighttime input to avoid overexposure. Experiments on collected Daytime-Nighttime image pairs (DNP) and other public night image dataset show the superior performance of our method.
+Nighttime Image Enhancement (NIE) aims to improve the visibility of weakly illuminated images. Existing supervised methods rely on low/normal-light pairs captured from short/long exposure variation, which generalize poorly to real nighttime scenes. To overcome this, we propose the Reversible Lighting Transfer Network (RLTNet), which enhances a nighttime image by transferring the illumination of a weakly paired daytime reference. RLTNet maps each pair of daytime and nighttime images into a compact latent space with a reversible encoder that guarantees exact invertibility without a separately trained decoder. In this latent space, a Regularized Whitening and Coloring Transform (RegWCT) aligns the feature covariance of night images with that of day images. A spatial-aware refiner then adaptively blends the stylized output with the nighttime input to avoid overexposure. Experiments on collected Daytime-Nighttime image pairs (DNP) and other public night image dataset show the superior performance of our method.
 
 
 
@@ -263,7 +263,7 @@ Night & Zero-DCE++ & EnlightenGAN & Reti-Former & Reti-Diff & CAP-VST & Ours (RL
 %\subsection{Reversible Lighting Transfer Network (RLTNet)}
 %\label{sec:RLTNet}
 
-The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. It consists of three components: reversible network, Regularized Whitening and coloring Transform (RegWCT) and the Refiner network.
+The architecture diagram of the proposed RLTNet is illustrated in Fig.~\ref{fig:structure}. It consists of three components: reversible network, Regularized Whitening and Coloring Transform (RegWCT) and the Refiner network.
 
 %It consists of three components: a \emph{reversible network} that produces invertible latent representations of images, a Regularized Whiten--Colorize Transfer (RegWCT) that transfers lighting in the latent space, and a refiner network that adaptively blends the stylized output with the night input.
 
@@ -306,9 +306,11 @@ Let $Z \in \mathbb{R}^{C \times N}$ ($N = HW$) denote a reshaped latent feature 
 \begin{equation}
 \begin{aligned}
  Z_{\text{stylized}} 
-    &= \bm{\Sigma}_{Z_{\text{day}}}^{1/2}\, \bm{\Sigma}_{Z_{\text{night}}}^{-1/2}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
+    &= {L}_{Z_{\text{day}}}\, {L}_{Z_{\text{night}}}^{-1}\,(Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}),
 \end{aligned}   
 \end{equation}
+
+where $LL^T$ is the Choleskey decomposition of covariance ${\Sigma}_Z$ ($L$ is a lower triangular matrix with positive diagonal elements).
 %where $\bm{U} \in \mathbb{R}^{C \times C}$ is orthogonal and $\lambda_i \geq 0$ are the eigenvalues. The transfer operation becomes
 %\begin{equation}
 %\begin{split}
@@ -329,13 +331,13 @@ which lifts near-zero eigenvalues and prevents excessive inverse-whitening gains
 \noindent\textbf{Transform-matrix gain clipping.}
 The transform matrix that maps centered content features to style-colored features is
 \begin{equation}
-    \bm{T} = \bm{\Sigma}_{Z_{\text{day}}}^{+1/2}\, \widetilde{\bm{\Sigma}}_{Z_{\text{night}}}^{-1/2}.
+    \bm{T} ={L}_{Z_{\text{day}}}\, \widetilde{L}_{Z_{\text{night}}}^{-1}.
 \end{equation}
 We bound the spectral norm of $\bm{T}$ with the maximum singular value of $s_{max}$,
 \begin{equation}
     \widehat{\bm{T}} = \bm{U}\, \mathrm{diag}\!\left(\min(\sigma_i,\; s_{\max})\right)\, \bm{V}^{\!\top},
 \end{equation}
-where $\bm{T} = \bm{U}\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, \bm{V}^{\!\top}$ is the SVD of $\bm{T}$ and $s_{\max}$ is the gain cap. The final transform reads
+where $\bm{T} = \bm{U}\, \mathrm{diag}(\sigma_1, \ldots, \sigma_C)\, \bm{V}^{\!\top}$ is the SVD of $\bm{T}$. The final transform reads
 \begin{equation}
     Z_{\text{stylized}} = \widehat{\bm{T}}\, (Z_{\text{night}} - \bm{\mu}(Z_{\text{night}})) + \bm{\mu}(Z_{\text{day}}).
 \end{equation}
